@@ -134,20 +134,48 @@ async function loadHomepageCategory(container, businessUnit, borderClass) {
     </div>
   `;
 
-  if (typeof AmruthaAPI === 'undefined') {
-    renderGridError(container, businessUnit, 'API client not loaded', borderClass);
+  let productsToRender = [];
+
+  if (typeof AmruthaAPI !== 'undefined') {
+    const res = await AmruthaAPI.getProductsByUnit(businessUnit);
+    if (res && res.success && res.data && res.data.length > 0) {
+      productsToRender = res.data;
+    }
+  }
+
+  // Graceful fallback for static GitHub Pages / offline mode
+  if (productsToRender.length === 0 && typeof SITE_CONFIG !== 'undefined') {
+    if (businessUnit === 'DAIRY' && SITE_CONFIG.milkPage && SITE_CONFIG.milkPage.products) {
+      productsToRender = SITE_CONFIG.milkPage.products.map(p => ({
+        name: p.name,
+        localName: p.localName,
+        badge: p.badge,
+        description: p.description,
+        price: p.price,
+        unit: p.unit
+      }));
+    } else if (businessUnit === 'RICE' && SITE_CONFIG.ricePage && SITE_CONFIG.ricePage.products) {
+      productsToRender = SITE_CONFIG.ricePage.products.map(p => {
+        const defSize = (p.sizes && p.sizes.find(s => s.size === '25kg')) || (p.sizes && p.sizes[0]);
+        return {
+          name: p.name,
+          localName: p.localName,
+          badge: p.badge,
+          description: p.description,
+          price: defSize ? defSize.examplePrice : 1450,
+          unit: defSize ? `${defSize.size} Bag` : '25kg Bag'
+        };
+      });
+    }
+  }
+
+  if (productsToRender.length === 0) {
+    renderGridError(container, businessUnit, `No active ${businessUnit} products found`, borderClass);
     return;
   }
 
-  const res = await AmruthaAPI.getProductsByUnit(businessUnit);
-
-  if (!res.success || !res.data || res.data.length === 0) {
-    renderGridError(container, businessUnit, res.error || `No active ${businessUnit} products found`, borderClass);
-    return;
-  }
-
-  // 2. Render from Backend
-  container.innerHTML = res.data.map(p => `
+  // 2. Render Products
+  container.innerHTML = productsToRender.map(p => `
     <div class="item-card ${borderClass}">
       <div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
@@ -264,10 +292,8 @@ function setupContactForm() {
         }
 
         const waLink = document.getElementById('inquiryWhatsappLink');
-        if (waLink) {
-          const waText = `Hello Amrutha, I submitted a quick inquiry on your website:%0A- *Name:* ${encodeURIComponent(name)}%0A- *Phone:* ${encodeURIComponent(phoneDigits)}%0A- *Interested In:* ${encodeURIComponent(product)}${message ? `%0A- *Area / Message:* ${encodeURIComponent(message)}` : ''}`;
-          waLink.href = `https://wa.me/919876543210?text=${waText}`;
-        }
+          const waPhone = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.contact && SITE_CONFIG.contact.whatsapp) ? SITE_CONFIG.contact.whatsapp.replace(/\D/g, '') : '916304495282';
+          waLink.href = `https://wa.me/${waPhone}?text=${waText}`;
 
         successCard.style.display = 'flex';
       }

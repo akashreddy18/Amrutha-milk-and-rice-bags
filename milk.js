@@ -282,8 +282,10 @@ function setupDairyCardListeners(products) {
   document.querySelectorAll('.btn-notify-wa').forEach(btn => {
     btn.addEventListener('click', () => {
       const name = btn.getAttribute('data-name') || 'Product';
-      const text = encodeURIComponent(`Hello Amrutha Dairy, please notify me when ${name} is available for delivery!`);
-      window.open(`https://wa.me/919876543210?text=${text}`, '_blank');
+      const waPhone = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.contact && SITE_CONFIG.contact.whatsapp)
+        ? SITE_CONFIG.contact.whatsapp.replace(/\D/g, '')
+        : '916304495282';
+      window.open(`https://wa.me/${waPhone}?text=${text}`, '_blank');
     });
   });
 }

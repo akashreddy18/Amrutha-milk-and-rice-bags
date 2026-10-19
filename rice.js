@@ -113,7 +113,8 @@ function renderRiceGrid(container, products) {
     const imgSrc = product.imageUrl || 'assets/images/premium_rice.jpg';
     const badgeText = product.badge || 'Aged 12-18 Months';
 
-    // Calculate approximate size pricing for convenient 10kg & 5kg options if 25kg bag
+    // Calculate approximate size pricing for convenient 50kg, 10kg & 5kg options if 25kg bag
+    const price50kg = Math.round((basePrice * 1.95) / 10) * 10;
     const price10kg = Math.round((basePrice * 0.42) / 10) * 10;
     const price5kg = Math.round((basePrice * 0.22) / 10) * 10;
 
@@ -146,6 +147,9 @@ function renderRiceGrid(container, products) {
                 <span style="font-size: 0.8rem; color: var(--text-muted);">Standard Pack</span>
               </div>
               <div class="rice-size-buttons-group">
+                <button type="button" class="rice-size-btn" data-product-id="${product.id}" data-size="50kg" data-price="${price50kg}">
+                  50 kg Bag
+                </button>
                 <button type="button" class="rice-size-btn active" data-product-id="${product.id}" data-size="25kg" data-price="${basePrice}">
                   25 kg Bag
                 </button>

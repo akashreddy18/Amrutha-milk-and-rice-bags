@@ -657,7 +657,9 @@ ${itemsText}
 ----------------------------------------
 Please confirm my order delivery. Thank you!`;
 
-    const phone = '919876543210';
+    const phone = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.contact && SITE_CONFIG.contact.whatsapp)
+      ? SITE_CONFIG.contact.whatsapp.replace(/\D/g, '')
+      : '916304495282';
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
     showToast('Opening WhatsApp to place your order...');

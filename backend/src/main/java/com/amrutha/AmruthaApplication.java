@@ -183,6 +183,16 @@ public class AmruthaApplication {
                         "Rice",
                         "Silky & Aromatic",
                         "assets/images/kolam_rice_bag.jpg"
+                productRepository.save(new Product(
+                        "Amrutha Sona Masoori Rice (50kg)",
+                        "(సోనా మసూరి బియ్యం / सोना मसूरी चावल)",
+                        "Finest medium-slender grain rice aged naturally for 12 to 18 months. Bulk family & catering standard pack.",
+                        BusinessUnit.RICE,
+                        new BigDecimal("2850.00"),
+                        "50kg Bag",
+                        "Rice",
+                        "Aged 12-18 Months",
+                        "assets/images/brand_rice_bag.jpg"
                 ));
 
                 log.info("Initialized {} sample products.", productRepository.count());
@@ -193,9 +203,9 @@ public class AmruthaApplication {
                 log.info("Seeding sample customer records...");
                 sampleCustomer = new Customer(
                         "Ramesh Sharma",
-                        "+919876543210",
-                        "ramesh.sharma@example.com",
-                        "Flat 302, Green Valley Apartments, Market Road",
+                        "+916304495282",
+                        "customer@amrutha.com",
+                        "Venkatarampuram Road, Kodad Town - 508206, Telangana",
                         "Morning (5:30 AM – 7:30 AM)",
                         BusinessUnit.DAIRY
                 );
