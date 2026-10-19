@@ -1,0 +1,20 @@
+# Example configuration template for local development
+# Copy to application.properties and customize if needed:
+
+# MySQL Host (default: localhost)
+DB_HOST=localhost
+
+# MySQL Port (default: 3306)
+DB_PORT=3306
+
+# Database Name
+DB_NAME=amrutha_db
+
+# MySQL Username
+DB_USERNAME=root
+
+# MySQL Password (replace with your local MySQL root password)
+DB_PASSWORD=your_mysql_password_here
+
+# Backend Server Port (default: 8080)
+PORT=8080

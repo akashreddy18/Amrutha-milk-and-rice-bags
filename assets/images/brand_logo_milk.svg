@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 120" width="100%" height="100%" role="img" aria-label="AMRUTHA FRESH MILK Brand Logo">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&amp;family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,500&amp;display=swap');
+      .brand-txt {
+        font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+        font-weight: 800;
+        font-size: 38px;
+        fill: #165B33;
+        letter-spacing: 0.06em;
+      }
+      .sub-brand-milk {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        font-weight: 800;
+        font-size: 17px;
+        fill: #165B33;
+        letter-spacing: 0.16em;
+      }
+      .tagline-txt {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        font-weight: 500;
+        font-style: italic;
+        font-size: 11.5px;
+        fill: #18261A;
+        letter-spacing: 0.05em;
+      }
+    </style>
+    <linearGradient id="leafGradMilk" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#165B33" />
+      <stop offset="100%" stop-color="#2E7D32" />
+    </linearGradient>
+  </defs>
+
+  <!-- Centered Twin Leaves Sprout & Arch -->
+  <g transform="translate(170, 20)">
+    <!-- Arch curves -->
+    <path d="M -75,10 Q -20,-4 -3,2" fill="none" stroke="#165B33" stroke-width="1.8" stroke-linecap="round" />
+    <path d="M 3,2 Q 20,-4 75,10" fill="none" stroke="#165B33" stroke-width="1.8" stroke-linecap="round" />
+
+    <!-- Left Leaf -->
+    <path d="M 0,3 C -6,-5 -18,-15 -25,-12 C -28,-4 -15,3 0,3 Z" fill="url(#leafGradMilk)" />
+    <!-- Left Leaf Vein -->
+    <path d="M 0,3 C -10,-4 -18,-9 -23,-11" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.7" />
+
+    <!-- Right Leaf -->
+    <path d="M 0,3 C 6,-6 20,-17 28,-13 C 30,-5 16,3 0,3 Z" fill="url(#leafGradMilk)" />
+    <!-- Right Leaf Vein -->
+    <path d="M 0,3 C 10,-5 20,-10 26,-12" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.7" />
+
+    <!-- Center sprout stem -->
+    <path d="M 0,3 Q 1,8 0,11" fill="none" stroke="#165B33" stroke-width="1.8" stroke-linecap="round" />
+  </g>
+
+  <!-- Brand Wordmark -->
+  <text x="170" y="62" text-anchor="middle" class="brand-txt">AMRUTHA</text>
+
+  <!-- Sub-Brand: FRESH MILK -->
+  <text x="170" y="86" text-anchor="middle" class="sub-brand-milk">FRESH MILK</text>
+
+  <!-- Tagline -->
+  <text x="170" y="106" text-anchor="middle" class="tagline-txt">Pure Quality, Every Day.</text>
+</svg>

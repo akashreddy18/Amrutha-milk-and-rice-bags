@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | AMRUTHA Private Command Center</title>
+  <meta name="description" content="Secure administrative command center for Amrutha Fresh Milk and Premium Rice bags. Manage orders, inventory stock, catalog, and division dashboards.">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <!-- Immediate Client-Side Security Guard: Unauthenticated visitors redirected to /admin/login -->
+  <script>
+    (function () {
+      var token = sessionStorage.getItem('amrutha_admin_token');
+      if (!token) {
+        window.location.replace('/admin/login?error=auth_required');
+      }
+    })();
+  </script>
+</head>
+<body class="admin-body">
+
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div class="container admin-header-inner">
+      <div class="admin-brand">
+        <a href="/admin/dashboard" class="admin-brand-link" title="Admin Dashboard">
+          <img src="/assets/images/brand_logo_master.svg" alt="AMRUTHA" class="admin-logo-svg" width="130" height="38">
+        </a>
+        <div class="admin-title-badge">
+          <span class="badge-tag">ADMIN PORTAL</span>
+          <span class="admin-secure-indicator">
+            <span class="secure-dot"></span> Spring Security Enforced
+          </span>
+        </div>
+      </div>
+
+      <!-- Authenticated User Info & Logout -->
+      <div class="admin-user-nav" id="adminUserNav" style="display: flex;">
+        <div class="admin-user-profile">
+          <span class="admin-user-avatar">👤</span>
+          <div class="admin-user-details">
+            <strong id="adminUserName">Administrator</strong>
+            <span class="admin-role-badge" id="adminUserRole">ROLE_ADMIN</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" id="adminLogoutBtn" title="Sign out securely">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container admin-main">
+
+    <!-- ADMIN DASHBOARD WORKSPACE -->
+    <section class="admin-dashboard-section" id="adminDashboardSection" style="display: block;">
+
+      <!-- Navigation Tabs -->
+      <nav class="admin-tabs-nav" aria-label="Admin Navigation Tabs">
+        <button type="button" class="admin-tab active" data-tab="tab-overview">
+          <span class="tab-icon">📊</span> Combined Overview
+        </button>
+        <button type="button" class="admin-tab" data-tab="tab-dairy">
+          <span class="tab-icon">🥛</span> Dairy Division
+        </button>
+        <button type="button" class="admin-tab" data-tab="tab-rice">
+          <span class="tab-icon">🌾</span> Rice Division
+        </button>
+        <button type="button" class="admin-tab" data-tab="tab-orders">
+          <span class="tab-icon">📦</span> Order Management <span class="tab-count-badge" id="tabOrdersBadge">0</span>
+        </button>
+        <button type="button" class="admin-tab" data-tab="tab-products">
+          <span class="tab-icon">🏷️</span> Products & Stock
+        </button>
+        <button type="button" class="admin-tab" data-tab="tab-finance">
+          <span class="tab-icon">💰</span> Finances & P&L
+        </button>
+      </nav>
+
+      <!-- Alert Notification Banner for Workspace -->
+      <div class="admin-toast-container" id="adminToastContainer"></div>
+
+      <!-- TAB 1: COMBINED OWNER OVERVIEW -->
+      <div class="admin-tab-content active" id="tab-overview">
+        <div class="tab-header">
+          <div>
+            <h2>Executive Business Overview</h2>
+            <p>Unified operations, revenue metrics, and order fulfillment across Dairy and Rice business units.</p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="loadCombinedOverview()">
+            🔄 Refresh Metrics
+          </button>
+        </div>
+
+        <!-- KPI Cards Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-gold">
+            <span class="kpi-label">Total Gross Revenue</span>
+            <span class="kpi-value" id="kpiTotalRevenue">₹0.00</span>
+            <span class="kpi-subtitle">Completed & active orders</span>
+          </div>
+          <div class="kpi-card kpi-green">
+            <span class="kpi-label">Total Customer Orders</span>
+            <span class="kpi-value" id="kpiTotalOrders">0</span>
+            <span class="kpi-subtitle">Dairy & Rice transactions</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Dairy Revenue</span>
+            <span class="kpi-value" id="kpiDairyRevenue">₹0.00</span>
+            <span class="kpi-subtitle" id="kpiDairyOrdersCount">0 orders</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Rice Revenue</span>
+            <span class="kpi-value" id="kpiRiceRevenue">₹0.00</span>
+            <span class="kpi-subtitle" id="kpiRiceOrdersCount">0 orders</span>
+          </div>
+        </div>
+
+        <!-- Division Comparison & Order Status Grid -->
+        <div class="dashboard-two-column">
+          <!-- Status Distribution -->
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3>Order Fulfillment Pipeline</h3>
+            </div>
+            <div class="status-pipeline" id="orderStatusPipeline">
+              <!-- Dynamically rendered status pills -->
+            </div>
+          </div>
+
+          <!-- Inventory Health Alerts -->
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3>Inventory Health & Alerts</h3>
+            </div>
+            <div class="inventory-alerts" id="inventoryAlerts">
+              <!-- Low stock alerts rendered here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Orders Panel -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3>Recent Customer Orders</h3>
+            <span class="text-muted">Latest 10 orders</span>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table" id="recentOrdersTable">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Business Unit</th>
+                  <th>Total Amount</th>
+                  <th>Status</th>
+                  <th>Slot</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersTableBody">
+                <tr><td colspan="7" class="text-center py-4">Loading orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: DAIRY DIVISION DASHBOARD -->
+      <div class="admin-tab-content" id="tab-dairy">
+        <div class="tab-header">
+          <div>
+            <h2>Dairy Division Dashboard</h2>
+            <p>Fresh cow milk, buffalo milk, paneer inventory and daily morning/evening delivery cycles.</p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="loadDairyDashboard()">
+            🔄 Refresh Dairy
+          </button>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-green">
+            <span class="kpi-label">Dairy Revenue</span>
+            <span class="kpi-value" id="dairyKpiRevenue">₹0.00</span>
+            <span class="kpi-subtitle">Delivered & confirmed</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Total Dairy Orders</span>
+            <span class="kpi-value" id="dairyKpiOrders">0</span>
+            <span class="kpi-subtitle">Customer deliveries</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Morning Slot Deliveries</span>
+            <span class="kpi-value" id="dairyKpiMorning">0</span>
+            <span class="kpi-subtitle">5:30 AM – 7:30 AM</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Evening Slot Deliveries</span>
+            <span class="kpi-value" id="dairyKpiEvening">0</span>
+            <span class="kpi-subtitle">5:30 PM – 7:30 PM</span>
+          </div>
+        </div>
+
+        <!-- Dairy Inventory Table -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3>Dairy Products & Live Stock Levels</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Unit</th>
+                  <th>Current Stock</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dairyStockTableBody">
+                <tr><td colspan="7" class="text-center py-4">Loading dairy stock...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: RICE DIVISION DASHBOARD -->
+      <div class="admin-tab-content" id="tab-rice">
+        <div class="tab-header">
+          <div>
+            <h2>Rice Division Dashboard</h2>
+            <p>Traditional naturally aged rice bags: Sona Masoori, Royal Basmati, and Kolam BPT inventory.</p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="loadRiceDashboard()">
+            🔄 Refresh Rice
+          </button>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-gold">
+            <span class="kpi-label">Rice Revenue</span>
+            <span class="kpi-value" id="riceKpiRevenue">₹0.00</span>
+            <span class="kpi-subtitle">Delivered & confirmed</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Rice Bag Orders</span>
+            <span class="kpi-value" id="riceKpiOrders">0</span>
+            <span class="kpi-subtitle">Family & wholesale deliveries</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Active Rice Products</span>
+            <span class="kpi-value" id="riceKpiActiveProducts">0</span>
+            <span class="kpi-subtitle">Varieties in catalog</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Total Bags in Stock</span>
+            <span class="kpi-value" id="riceKpiTotalBags">0</span>
+            <span class="kpi-subtitle">Warehouse reserves</span>
+          </div>
+        </div>
+
+        <!-- Rice Inventory Table -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3>Rice Bags Inventory</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Packaging</th>
+                  <th>Price / Bag</th>
+                  <th>In-Stock Bags</th>
+                  <th>Inventory Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="riceStockTableBody">
+                <tr><td colspan="6" class="text-center py-4">Loading rice stock...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: ORDER MANAGEMENT -->
+      <div class="admin-tab-content" id="tab-orders">
+        <div class="tab-header">
+          <div>
+            <h2>Customer Orders & Delivery Status</h2>
+            <p>View real customer orders, verify items, and update fulfillment lifecycle.</p>
+          </div>
+          <div class="header-actions">
+            <!-- Filter by BU -->
+            <select id="ordersBuFilter" class="form-select form-select-sm" onchange="loadOrders()">
+              <option value="">All Business Units</option>
+              <option value="DAIRY">Dairy Division</option>
+              <option value="RICE">Rice Division</option>
+            </select>
+            <!-- Filter by Status -->
+            <select id="ordersStatusFilter" class="form-select form-select-sm" onchange="loadOrders()">
+              <option value="">All Statuses</option>
+              <option value="PENDING">PENDING</option>
+              <option value="CONFIRMED">CONFIRMED</option>
+              <option value="PACKED">PACKED</option>
+              <option value="OUT_FOR_DELIVERY">OUT FOR DELIVERY</option>
+              <option value="DELIVERED">DELIVERED</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+            <button type="button" class="btn btn-outline btn-sm" onclick="loadOrders()">🔄 Refresh</button>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer Info</th>
+                  <th>Delivery Address</th>
+                  <th>Slot</th>
+                  <th>Line Items</th>
+                  <th>Total Amount</th>
+                  <th>Current Status</th>
+                  <th>Update Status</th>
+                </tr>
+              </thead>
+              <tbody id="allOrdersTableBody">
+                <tr><td colspan="8" class="text-center py-4">Loading customer orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: PRODUCTS & STOCK MANAGEMENT -->
+      <div class="admin-tab-content" id="tab-products">
+        <div class="tab-header">
+          <div>
+            <h2>Product Catalog & Stock Management</h2>
+            <p>Add new products, adjust inventory quantities, and toggle catalog visibility.</p>
+          </div>
+          <div class="header-actions">
+            <select id="catalogBuFilter" class="form-select form-select-sm" onchange="loadCatalogProducts()">
+              <option value="">All Units</option>
+              <option value="DAIRY">Dairy</option>
+              <option value="RICE">Rice</option>
+            </select>
+            <button type="button" class="btn btn-primary btn-sm" onclick="openAddProductModal()">
+              + Add Product
+            </button>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product Details</th>
+                  <th>Business Unit</th>
+                  <th>Price</th>
+                  <th>Unit</th>
+                  <th>Stock Level</th>
+                  <th>Catalog Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="catalogProductsTableBody">
+                <tr><td colspan="8" class="text-center py-4">Loading catalog...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 6: FINANCIAL MANAGEMENT & P&L REPORTING -->
+      <!-- =================================================================== -->
+      <div class="admin-tab-content" id="tab-finance">
+        <div class="tab-header">
+          <div>
+            <h2>Financial Statements & Profit/Loss</h2>
+            <p>Strictly segregated accounting for Dairy and Rice operations with COGS vs. OPEX tracking.</p>
+          </div>
+          <div class="tab-actions">
+            <button type="button" class="btn btn-primary btn-sm" onclick="openRecordExpenseModal()">
+              ➕ Record Expense (OPEX)
+            </button>
+            <button type="button" class="btn btn-gold btn-sm" onclick="openRecordPurchaseModal()">
+              ➕ Record Purchase (COGS)
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="loadFinancialReport()">
+              🔄 Refresh Statement
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Controls Bar -->
+        <div class="finance-filter-bar">
+          <div class="filter-mode-toggles">
+            <button type="button" class="btn-filter-toggle active" id="btnFilterDaily" onclick="setFinanceFilterMode('DAILY')">Daily</button>
+            <button type="button" class="btn-filter-toggle" id="btnFilterMonthly" onclick="setFinanceFilterMode('MONTHLY')">Monthly</button>
+            <button type="button" class="btn-filter-toggle" id="btnFilterRange" onclick="setFinanceFilterMode('RANGE')">Date Range</button>
+          </div>
+
+          <div class="filter-inputs-group">
+            <!-- Daily Input -->
+            <div id="filterGroupDaily" class="filter-date-group">
+              <label for="finReportDate">Report Date:</label>
+              <input type="date" id="finReportDate" class="form-control form-control-sm">
+            </div>
+
+            <!-- Monthly Inputs -->
+            <div id="filterGroupMonthly" class="filter-date-group" style="display: none;">
+              <label for="finReportYear">Year:</label>
+              <select id="finReportYear" class="form-control form-control-sm">
+                <option value="2026" selected>2026</option>
+                <option value="2025">2025</option>
+              </select>
+              <label for="finReportMonth">Month:</label>
+              <select id="finReportMonth" class="form-control form-control-sm">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10" selected>October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </div>
+
+            <!-- Range Inputs -->
+            <div id="filterGroupRange" class="filter-date-group" style="display: none;">
+              <label for="finStartDate">From:</label>
+              <input type="date" id="finStartDate" class="form-control form-control-sm">
+              <label for="finEndDate">To:</label>
+              <input type="date" id="finEndDate" class="form-control form-control-sm">
+            </div>
+
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applyFinanceFilter()">Apply Filter</button>
+          </div>
+        </div>
+
+        <!-- Period Banner & Accounting Rules -->
+        <div class="finance-period-banner">
+          <div class="banner-title">
+            <span class="banner-badge" id="finPeriodBadge">DAILY</span>
+            <span id="finPeriodText">Statement for Today</span>
+          </div>
+          <div class="accounting-rules-box">
+            <strong>Accounting Rules:</strong> (1) Revenue from delivered orders. (2) COGS from direct purchases (raw milk / paddy) avoiding double-counting. (3) OPEX from operational expenses. (4) Gross Profit = Revenue - COGS. (5) Net Operating Profit = Gross Profit - OPEX. (6) When Revenue is ₹0, calculations are flagged incomplete to prevent misleading profit metrics.
+          </div>
+        </div>
+
+        <!-- P&L Statements Grid (Dairy, Rice, Combined) -->
+        <div class="finance-statements-grid">
+
+          <!-- 1. DAIRY P&L STATEMENT -->
+          <div class="statement-card statement-dairy">
+            <div class="statement-header">
+              <div class="statement-icon">🥛</div>
+              <div>
+                <h3>Dairy Division P&L</h3>
+                <small>Fresh Cow & Buffalo Milk Operations</small>
+              </div>
+            </div>
+
+            <div class="statement-metrics">
+              <div class="statement-row">
+                <span class="row-label">1. Sales Revenue (Delivered Orders)</span>
+                <span class="row-value val-revenue" id="dairyRev">₹0.00</span>
+              </div>
+              <div class="statement-row">
+                <span class="row-label">2. Cost of Goods Sold (Raw Milk Purchases)</span>
+                <span class="row-value val-cogs" id="dairyCogs">-₹0.00</span>
+              </div>
+              <div class="statement-row row-subtotal">
+                <span class="row-label"><strong>Gross Profit</strong></span>
+                <div class="row-value-group">
+                  <span class="row-value font-bold" id="dairyGrossProfit">₹0.00</span>
+                  <span class="margin-badge" id="dairyGrossMargin">0%</span>
+                </div>
+              </div>
+              <div class="statement-row">
+                <span class="row-label">3. Operating Expenses (OPEX)</span>
+                <span class="row-value val-opex" id="dairyOpex">-₹0.00</span>
+              </div>
+              <div class="statement-row row-total">
+                <span class="row-label"><strong>Net Operating Profit</strong></span>
+                <div class="row-value-group">
+                  <span class="row-value font-bold" id="dairyNetProfit">₹0.00</span>
+                  <span class="margin-badge" id="dairyNetMargin">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="statement-status" id="dairyStatus">
+              <span class="status-indicator"></span>
+              <span class="status-text">Complete statement</span>
+            </div>
+
+            <div class="statement-breakdown">
+              <h4>Dairy Expenses by Category</h4>
+              <div class="category-pills" id="dairyCategoryPills">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. RICE P&L STATEMENT -->
+          <div class="statement-card statement-rice">
+            <div class="statement-header">
+              <div class="statement-icon">🌾</div>
+              <div>
+                <h3>Rice Division P&L</h3>
+                <small>Sona Masoori, Basmati & BPT Kolam Operations</small>
+              </div>
+            </div>
+
+            <div class="statement-metrics">
+              <div class="statement-row">
+                <span class="row-label">1. Sales Revenue (Delivered Orders)</span>
+                <span class="row-value val-revenue" id="riceRev">₹0.00</span>
+              </div>
+              <div class="statement-row">
+                <span class="row-label">2. Cost of Goods Sold (Raw Paddy Purchases)</span>
+                <span class="row-value val-cogs" id="riceCogs">-₹0.00</span>
+              </div>
+              <div class="statement-row row-subtotal">
+                <span class="row-label"><strong>Gross Profit</strong></span>
+                <div class="row-value-group">
+                  <span class="row-value font-bold" id="riceGrossProfit">₹0.00</span>
+                  <span class="margin-badge" id="riceGrossMargin">0%</span>
+                </div>
+              </div>
+              <div class="statement-row">
+                <span class="row-label">3. Operating Expenses (OPEX)</span>
+                <span class="row-value val-opex" id="riceOpex">-₹0.00</span>
+              </div>
+              <div class="statement-row row-total">
+                <span class="row-label"><strong>Net Operating Profit</strong></span>
+                <div class="row-value-group">
+                  <span class="row-value font-bold" id="riceNetProfit">₹0.00</span>
+                  <span class="margin-badge" id="riceNetMargin">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="statement-status" id="riceStatus">
+              <span class="status-indicator"></span>
+              <span class="status-text">Complete statement</span>
+            </div>
+
+            <div class="statement-breakdown">
+              <h4>Rice Expenses by Category</h4>
+              <div class="category-pills" id="riceCategoryPills">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. COMBINED ENTERPRISE P&L STATEMENT -->
+          <div class="statement-card statement-combined">
+            <div class="statement-header">
+              <div class="statement-icon">🏛️</div>
+              <div>
+                <h3>Combined Enterprise P&L</h3>
+                <small>Amrutha Farm Fresh Overall Business Performance</small>
+              </div>
+            </div>
+
+            <div class="statement-metrics">
+              <div class="statement-row">
+                <span class="row-label">1. Total Enterprise Revenue</span>
+                <span class="row-value val-revenue" id="combRev">₹0.00</span>
+              </div>
+              <div class="statement-row">
+                <span class="row-label">2. Total COGS (Procurements)</span>
+                <span class="row-value val-cogs" id="combCogs">-₹0.00</span>
+              </div>
+              <div class="statement-row row-subtotal">
+                <span class="row-label"><strong>Enterprise Gross Profit</strong></span>
+                <div class="row-value-group">
+                  <span class="row-value font-bold" id="combGrossProfit">₹0.00</span>
+                  <span class="margin-badge" id="combGrossMargin">0%</span>
+                </div>
+              </div>
+              <div class="statement-row">
+                <span class="row-label">3. Total Operating Expenses</span>
+                <span class="row-value val-opex" id="combOpex">-₹0.00</span>
+              </div>
+              <div class="statement-row row-total">
+                <span class="row-label"><strong>Enterprise Net Profit</strong></span>
+                <div class="row-value-group">
+                  <span class="row-value font-bold" id="combNetProfit">₹0.00</span>
+                  <span class="margin-badge" id="combNetMargin">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="statement-status" id="combStatus">
+              <span class="status-indicator"></span>
+              <span class="status-text">Complete statement</span>
+            </div>
+
+            <div class="statement-breakdown">
+              <h4>Volume & Activity Metrics</h4>
+              <div class="activity-stats-grid">
+                <div class="activity-item">
+                  <span class="activity-label">Completed Sales Orders</span>
+                  <span class="activity-val" id="combOrdersCount">0</span>
+                </div>
+                <div class="activity-item">
+                  <span class="activity-label">Raw Material Purchases</span>
+                  <span class="activity-val" id="combPurchasesCount">0</span>
+                </div>
+                <div class="activity-item">
+                  <span class="activity-label">Expense Vouchers</span>
+                  <span class="activity-val" id="combExpensesCount">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Ledger Tables Section -->
+        <div class="finance-ledger-section">
+          <div class="ledger-tabs">
+            <button type="button" class="btn-ledger-tab active" id="btnLedgerExpenses" onclick="switchLedgerView('EXPENSES')">
+              📑 Operational Expenses Ledger (<span id="ledgerExpensesCount">0</span>)
+            </button>
+            <button type="button" class="btn-ledger-tab" id="btnLedgerPurchases" onclick="switchLedgerView('PURCHASES')">
+              📦 Raw Material Purchases Ledger (<span id="ledgerPurchasesCount">0</span>)
+            </button>
+          </div>
+
+          <!-- Expenses Table -->
+          <div class="admin-table-card" id="ledgerExpensesView">
+            <div class="table-responsive">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Business Unit</th>
+                    <th>Description</th>
+                    <th>Amount (₹)</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="expensesTableBody">
+                  <tr><td colspan="7" class="text-center py-4">Loading operational expenses...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Purchases Table -->
+          <div class="admin-table-card" id="ledgerPurchasesView" style="display: none;">
+            <div class="table-responsive">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Purchase #</th>
+                    <th>Supplier / Farmer</th>
+                    <th>Business Unit</th>
+                    <th>Item Description</th>
+                    <th>Quantity & Unit</th>
+                    <th>Unit Rate (₹)</th>
+                    <th>Total Cost (₹)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="purchasesTableBody">
+                  <tr><td colspan="9" class="text-center py-4">Loading raw purchases...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =================================================================== -->
+  <!-- MODAL: ADD / EDIT PRODUCT -->
+  <!-- =================================================================== -->
+  <div class="admin-modal-backdrop" id="productModalBackdrop" style="display: none;">
+    <div class="admin-modal">
+      <div class="modal-header">
+        <h3 id="productModalTitle">Add New Product</h3>
+        <button type="button" class="btn-close-modal" onclick="closeProductModal()">✕</button>
+      </div>
+      <form id="productForm" class="modal-form">
+        <input type="hidden" id="prodEditId">
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="prodName">Product Name *</label>
+            <input type="text" id="prodName" class="form-control" required placeholder="e.g. Pure Cow Ghee">
+          </div>
+          <div class="form-group col">
+            <label for="prodLocalName">Local Name (Telugu/Hindi)</label>
+            <input type="text" id="prodLocalName" class="form-control" placeholder="e.g. (ఆవు నెయ్యి)">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="prodBusinessUnit">Business Unit *</label>
+            <select id="prodBusinessUnit" class="form-control" required>
+              <option value="DAIRY">DAIRY (Milk & Fresh Dairy)</option>
+              <option value="RICE">RICE (Premium Rice Bags)</option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="prodCategory">Category</label>
+            <input type="text" id="prodCategory" class="form-control" placeholder="Milk, Ghee, Rice, Paneer">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="prodPrice">Price (₹) *</label>
+            <input type="number" id="prodPrice" class="form-control" step="0.01" min="0" required placeholder="0.00">
+          </div>
+          <div class="form-group col">
+            <label for="prodUnit">Unit Specification *</label>
+            <input type="text" id="prodUnit" class="form-control" required placeholder="e.g. Litre, 25kg Bag, 500g">
+          </div>
+          <div class="form-group col">
+            <label for="prodStock">Initial Stock *</label>
+            <input type="number" id="prodStock" class="form-control" min="0" required value="100">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="prodBadge">Promotional Badge</label>
+          <input type="text" id="prodBadge" class="form-control" placeholder="e.g. Farm Fresh, Aged 12-18 Months">
+        </div>
+
+        <div class="form-group">
+          <label for="prodImageUrl">Image URL</label>
+          <input type="text" id="prodImageUrl" class="form-control" placeholder="assets/images/brand_ghee_jar.jpg">
+        </div>
+
+        <div class="form-group">
+          <label for="prodDescription">Product Description</label>
+          <textarea id="prodDescription" class="form-control" rows="3" placeholder="Nutritional benefits, source details, delivery instructions..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeProductModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- MODAL: QUICK STOCK UPDATE -->
+  <!-- =================================================================== -->
+  <div class="admin-modal-backdrop" id="stockModalBackdrop" style="display: none;">
+    <div class="admin-modal admin-modal-sm">
+      <div class="modal-header">
+        <h3>Adjust Product Stock</h3>
+        <button type="button" class="btn-close-modal" onclick="closeStockModal()">✕</button>
+      </div>
+      <form id="stockForm" class="modal-form">
+        <input type="hidden" id="stockProdId">
+
+        <div class="form-group">
+          <label>Product Name</label>
+          <div id="stockProdName" class="form-control-static font-bold"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="stockNewQty">New Available Stock Quantity *</label>
+          <input type="number" id="stockNewQty" class="form-control" min="0" required>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeStockModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveStockBtn">Update Stock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- MODAL: RECORD OPERATIONAL EXPENSE (OPEX) -->
+  <!-- =================================================================== -->
+  <div class="admin-modal-backdrop" id="expenseModalBackdrop" style="display: none;">
+    <div class="admin-modal">
+      <div class="modal-header">
+        <h3>Record Operational Expense (OPEX)</h3>
+        <button type="button" class="btn-close-modal" onclick="closeExpenseModal()">✕</button>
+      </div>
+      <form id="expenseForm" class="modal-form" onsubmit="handleExpenseFormSubmit(event)">
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="expBusinessUnit">Business Unit *</label>
+            <select id="expBusinessUnit" class="form-control" required onchange="onExpenseBuChanged()">
+              <option value="DAIRY">DAIRY (Milk & Fresh Dairy)</option>
+              <option value="RICE">RICE (Premium Rice Division)</option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="expDate">Expense Date *</label>
+            <input type="date" id="expDate" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="expCategory">Category *</label>
+            <select id="expCategory" class="form-control" required>
+              <!-- Populated dynamically via JS -->
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="expAmount">Amount (₹) *</label>
+            <input type="number" id="expAmount" class="form-control" step="0.01" min="0.01" required placeholder="0.00">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="expDescription">Description *</label>
+          <input type="text" id="expDescription" class="form-control" required placeholder="e.g. Organic cattle fodder silage or Paddy milling charges">
+        </div>
+
+        <div class="form-group">
+          <label for="expNotes">Notes / Voucher Reference (Optional)</label>
+          <textarea id="expNotes" class="form-control" rows="2" placeholder="Voucher #, vendor name, or payment details"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeExpenseModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveExpenseBtn">Save Expense Voucher</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- MODAL: RECORD RAW MATERIAL PURCHASE (COGS) -->
+  <!-- =================================================================== -->
+  <div class="admin-modal-backdrop" id="purchaseModalBackdrop" style="display: none;">
+    <div class="admin-modal">
+      <div class="modal-header">
+        <h3>Record Raw Material Purchase (COGS)</h3>
+        <button type="button" class="btn-close-modal" onclick="closePurchaseModal()">✕</button>
+      </div>
+      <form id="purchaseForm" class="modal-form" onsubmit="handlePurchaseFormSubmit(event)">
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="purBusinessUnit">Business Unit *</label>
+            <select id="purBusinessUnit" class="form-control" required onchange="onPurchaseBuChanged()">
+              <option value="DAIRY">DAIRY (Raw Milk Procurement)</option>
+              <option value="RICE">RICE (Raw Paddy Procurement)</option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="purDate">Purchase Date *</label>
+            <input type="date" id="purDate" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="purSupplierName">Farmer / Supplier Name *</label>
+            <input type="text" id="purSupplierName" class="form-control" required placeholder="e.g. Farmer Krishna Reddy or Miryalaguda Co-op">
+          </div>
+          <div class="form-group col">
+            <label for="purItemDescription">Procurement Item Description *</label>
+            <input type="text" id="purItemDescription" class="form-control" required placeholder="e.g. Morning Cow Milk (4.2% Fat) or Raw Paddy (75kg Bags)">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="purQuantity">Quantity *</label>
+            <input type="number" id="purQuantity" class="form-control" step="0.01" min="0.01" required placeholder="0.00" oninput="calculatePurchaseTotal()">
+          </div>
+          <div class="form-group col">
+            <label for="purUnit">Unit *</label>
+            <select id="purUnit" class="form-control" required>
+              <option value="Litre">Litre</option>
+              <option value="75kg Bag">75kg Bag</option>
+              <option value="Quintal">Quintal</option>
+              <option value="kg">kg</option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="purUnitRate">Unit Rate (₹) *</label>
+            <input type="number" id="purUnitRate" class="form-control" step="0.01" min="0.01" required placeholder="0.00" oninput="calculatePurchaseTotal()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Calculated Total Purchase Cost (₹):</label>
+          <div class="purchase-total-display" id="purTotalDisplay">₹0.00</div>
+        </div>
+
+        <div class="form-group">
+          <label for="purNotes">Notes / Quality Remarks</label>
+          <textarea id="purNotes" class="form-control" rows="2" placeholder="Fat %, SNF, moisture level, batch code..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closePurchaseModal()">Cancel</button>
+          <button type="submit" class="btn btn-gold" id="savePurchaseBtn">Record Raw Purchase</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/config.js"></script>
+  <script src="/admin/dashboard.js"></script>
+</body>
+</html>

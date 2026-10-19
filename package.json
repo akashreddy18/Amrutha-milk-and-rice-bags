@@ -1,0 +1,19 @@
+{
+  "name": "amrutha-fresh-milk-and-premium-rice",
+  "version": "1.0.0",
+  "description": "Clean, simple, professional frontend for Amrutha Fresh Milk & Amrutha Premium Rice",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "backend": "powershell -ExecutionPolicy Bypass -File ./run-backend.ps1"
+  },
+  "keywords": [
+    "dairy",
+    "rice",
+    "amrutha",
+    "fresh-milk",
+    "sona-masoori"
+  ],
+  "author": "Amrutha Dairy & Agro",
+  "license": "ISC"
+}

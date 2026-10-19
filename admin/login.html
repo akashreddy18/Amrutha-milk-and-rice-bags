@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal Sign In | AMRUTHA Dairy & Rice</title>
+  <meta name="description" content="Private administrative login portal for Amrutha Fresh Milk and Premium Rice. Role-based authentication enforced via Spring Security.">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    .admin-login-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top right, #f4faf6 0%, #ebf5ee 50%, #e0efe4 100%);
+    }
+    .login-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .portal-card {
+      width: 100%;
+      max-width: 460px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 42px 36px;
+      box-shadow: 0 20px 48px rgba(22, 91, 51, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(22, 91, 51, 0.15);
+      position: relative;
+    }
+    .portal-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .portal-logo {
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+    .portal-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #165B33;
+      margin-bottom: 6px;
+    }
+    .portal-subtitle {
+      font-size: 0.92rem;
+      color: #556959;
+      line-height: 1.4;
+    }
+    .portal-badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .portal-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background-color: #ebf5ee;
+      color: #165B33;
+      border: 1px solid #c7e3ce;
+    }
+    .portal-tag.sec {
+      background-color: #f0f7ff;
+      color: #1e429f;
+      border-color: #c3ddfd;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .sec-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: #10b981;
+      display: inline-block;
+    }
+    .portal-alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 22px;
+      line-height: 1.45;
+      display: none;
+    }
+    .portal-alert.error {
+      background-color: #fde8e8;
+      color: #9b1c1c;
+      border: 1px solid #f8b4b4;
+    }
+    .portal-alert.info {
+      background-color: #e1effe;
+      color: #1e429f;
+      border: 1px solid #b3d7ff;
+    }
+    .portal-alert.success {
+      background-color: #def7ec;
+      color: #03543f;
+      border: 1px solid #bcf0da;
+    }
+    .portal-form .form-group {
+      margin-bottom: 20px;
+    }
+    .portal-form label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #2e4033;
+      margin-bottom: 7px;
+    }
+    .portal-form .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      border: 1.5px solid #d0ded3;
+      border-radius: 10px;
+      background-color: #fafcfb;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .portal-form .form-control:focus {
+      outline: none;
+      border-color: #165B33;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(22, 91, 51, 0.12);
+    }
+    .portal-footer-notice {
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid #eef3f0;
+      font-size: 0.8rem;
+      color: #718475;
+      text-align: center;
+      line-height: 1.45;
+    }
+    .portal-footer-notice strong {
+      color: #384a3c;
+    }
+    .storefront-return {
+      text-align: center;
+      margin-top: 16px;
+    }
+    .storefront-return a {
+      color: #165B33;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .storefront-return a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="admin-login-page">
+
+  <div class="login-container">
+    <div class="portal-card">
+      <div class="portal-header">
+        <div class="portal-logo">
+          <img src="/assets/images/brand_logo_master.svg" alt="AMRUTHA" width="150" height="44">
+        </div>
+        <h1 class="portal-title">Admin Portal Sign In</h1>
+        <p class="portal-subtitle">Private operations command center for authorized Amrutha personnel.</p>
+        <div class="portal-badge-row">
+          <span class="portal-tag">RESTRICTED ACCESS</span>
+          <span class="portal-tag sec"><span class="sec-dot"></span> Spring Security Active</span>
+        </div>
+      </div>
+
+      <!-- Alert Container -->
+      <div class="portal-alert" id="loginAlert"></div>
+
+      <!-- Login Form -->
+      <form id="adminLoginForm" class="portal-form" autocomplete="on">
+        <div class="form-group">
+          <label for="loginUsername">Administrator Username</label>
+          <input type="text" id="loginUsername" class="form-control" placeholder="Enter username (e.g. admin)" required autocomplete="username" autofocus>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Administrator Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="loginPassword" class="form-control" placeholder="Enter secure password" required autocomplete="current-password">
+            <button type="button" class="btn-toggle-pw" id="togglePwBtn" aria-label="Toggle password visibility">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="loginSubmitBtn" style="padding: 13px; font-size: 1rem; font-weight: 700; border-radius: 10px;">
+          <span class="btn-text">Authenticate & Open Dashboard</span>
+          <span class="btn-spinner" style="display: none;"></span>
+        </button>
+      </form>
+
+      <div class="portal-footer-notice">
+        🔒 <strong>Enterprise Protection:</strong> Access strictly restricted to authorized staff. Passwords verified using BCrypt hashes; authenticated sessions issue signed HMAC-SHA256 JWT tokens. Unauthorized attempts are logged.
+      </div>
+
+      <div class="storefront-return">
+        <a href="/">← Return to Public Customer Website</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/config.js"></script>
+  <script src="/admin/login.js"></script>
+</body>
+</html>
