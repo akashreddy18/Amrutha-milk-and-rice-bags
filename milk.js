@@ -47,13 +47,26 @@ async function loadDairyProducts() {
 
   const response = await AmruthaAPI.getProductsByUnit('DAIRY');
 
-  if (!response.success || !response.data || response.data.length === 0) {
-    renderError(container, response.error || 'No active dairy products found.');
-    return;
+  if (response && response.success && response.data && response.data.length > 0) {
+    // 3. Render Live Backend Products
+    renderDairyGrid(container, response.data);
+  } else if (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.milkPage && SITE_CONFIG.milkPage.products) {
+    // 3. Seamless Fallback for Static GitHub Pages / Offline Showcase
+    const fallbackProducts = SITE_CONFIG.milkPage.products.map(p => ({
+      id: p.id,
+      name: p.name,
+      localName: p.localName,
+      price: p.price,
+      unit: p.unit,
+      badge: p.badge,
+      imageUrl: p.image,
+      description: p.description,
+      active: p.status !== 'coming_soon'
+    }));
+    renderDairyGrid(container, fallbackProducts);
+  } else {
+    renderError(container, (response && response.error) || 'No active dairy products found.');
   }
-
-  // 3. Render Backend Products
-  renderDairyGrid(container, response.data);
 }
 
 /**

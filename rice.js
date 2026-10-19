@@ -47,13 +47,29 @@ async function loadRiceProducts() {
 
   const response = await AmruthaAPI.getProductsByUnit('RICE');
 
-  if (!response.success || !response.data || response.data.length === 0) {
-    renderRiceError(container, response.error || 'No active rice products found.');
-    return;
+  if (response && response.success && response.data && response.data.length > 0) {
+    // 3. Render Live Backend Rice Products
+    renderRiceGrid(container, response.data);
+  } else if (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.ricePage && SITE_CONFIG.ricePage.products) {
+    // 3. Seamless Fallback for Static GitHub Pages / Offline Showcase
+    const fallbackProducts = SITE_CONFIG.ricePage.products.map(p => {
+      const defaultSize = (p.sizes && p.sizes[0]) || { examplePrice: 1450, size: '25kg' };
+      return {
+        id: p.id,
+        name: p.name,
+        localName: p.localName,
+        price: defaultSize.examplePrice,
+        unit: '25kg Bag',
+        badge: p.badge,
+        imageUrl: p.image,
+        description: p.description,
+        active: true
+      };
+    });
+    renderRiceGrid(container, fallbackProducts);
+  } else {
+    renderRiceError(container, (response && response.error) || 'No active rice products found.');
   }
-
-  // 3. Render Backend Rice Products
-  renderRiceGrid(container, response.data);
 }
 
 /**
