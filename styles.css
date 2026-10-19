@@ -2480,6 +2480,79 @@ img {
   flex-direction: column;
 }
 
+/* ===================================================================
+   CUSTOMER STOREFRONT: BRAND PHILOSOPHY QUOTE
+   =================================================================== */
+
+.brand-quote-section {
+  padding: 60px 0;
+  background: radial-gradient(circle at 50% 50%, #f7fbf8 0%, #edf7f0 60%, #e2efe6 100%);
+  position: relative;
+  overflow: hidden;
+  border-top: 1.5px solid #d4e8d8;
+  border-bottom: 1.5px solid #d4e8d8;
+}
+
+.quote-card {
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  padding: 10px 24px;
+}
+
+.quote-mark-icon {
+  font-family: 'Cinzel', serif;
+  font-size: 5rem;
+  line-height: 0.8;
+  color: #B8860B;
+  opacity: 0.35;
+  margin-bottom: 4px;
+  user-select: none;
+}
+
+.quote-text {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  font-size: 1.35rem;
+  line-height: 1.75;
+  color: #143823;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin: 0 0 20px 0;
+  font-style: normal;
+}
+
+.quote-author-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.quote-telugu-hint {
+  font-size: 0.98rem;
+  color: #B8860B;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.quote-brand-author {
+  font-size: 0.9rem;
+  color: #556c59;
+  font-style: italic;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .brand-quote-section {
+    padding: 42px 0;
+  }
+  .quote-text {
+    font-size: 1.12rem;
+    line-height: 1.65;
+  }
+}
+
 .admin-header {
   background-color: #ffffff;
   border-bottom: 2px solid #e1e9e2;
@@ -2594,16 +2667,17 @@ img {
 
 /* 1. Admin Login Card */
 .admin-login-section {
-  max-width: 480px;
-  margin: 40px auto;
+  max-width: 460px;
+  margin: 48px auto;
+  padding: 0 16px;
 }
 
 .admin-login-card {
   background-color: #ffffff;
-  border-radius: 16px;
-  padding: 36px 32px;
-  border: 1px solid #dce8de;
-  box-shadow: 0 12px 36px rgba(22, 91, 51, 0.08);
+  border-radius: 20px;
+  padding: 42px 36px;
+  border: 1px solid #cbe0d0;
+  box-shadow: 0 20px 48px rgba(22, 91, 51, 0.12), 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .login-card-header {
@@ -2612,34 +2686,37 @@ img {
 }
 
 .login-icon-box {
-  width: 58px;
-  height: 58px;
-  margin: 0 auto 14px auto;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 16px auto;
   border-radius: 50%;
-  background-color: #ebf5ee;
-  border: 1px solid #c7e3ce;
+  background: radial-gradient(circle at 30% 30%, #ebf8ee 0%, #d8ebd9 100%);
+  border: 1.5px solid #b6d9be;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 1.9rem;
+  box-shadow: 0 4px 12px rgba(22, 91, 51, 0.08);
 }
 
 .login-card-header h2 {
-  font-size: 1.45rem;
+  font-size: 1.55rem;
+  font-weight: 800;
   color: #165B33;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .login-card-header p {
-  font-size: 0.9rem;
-  color: #647566;
+  font-size: 0.92rem;
+  color: #556c59;
+  line-height: 1.45;
 }
 
 .admin-alert {
-  padding: 12px 14px;
-  border-radius: 8px;
-  font-size: 0.88rem;
-  margin-bottom: 18px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
   line-height: 1.4;
 }
 
@@ -2649,24 +2726,116 @@ img {
   border: 1px solid #f8b4b4;
 }
 
+/* Admin Form Controls & Inputs */
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #165B33;
+  letter-spacing: 0.2px;
+}
+
+.form-control {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 16px;
+  font-size: 0.98rem;
+  font-family: inherit;
+  color: #1e293b;
+  background-color: #fbfdfb;
+  border: 1.5px solid #c7d9cc;
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.form-control:hover {
+  border-color: #165B33;
+  background-color: #ffffff;
+}
+
+.form-control:focus {
+  border-color: #165B33;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(22, 91, 51, 0.12);
+}
+
 .password-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .password-input-wrapper .form-control {
-  padding-right: 44px;
+  padding-right: 48px;
 }
 
 .btn-toggle-pw {
   position: absolute;
-  right: 10px;
-  background: none;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 1.1rem;
-  color: #647566;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  color: #556959;
+  transition: background-color 0.15s ease;
+}
+
+.btn-toggle-pw:hover {
+  background-color: #ebf5ee;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #165B33 0%, #1e7a46 100%);
+  color: #ffffff !important;
+  border: none;
+  font-weight: 700;
+  font-size: 1.02rem;
+  padding: 14px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22, 91, 51, 0.22);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #124b2a 0%, #165B33 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(22, 91, 51, 0.32);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-block {
+  width: 100%;
+  display: flex;
 }
 
 .admin-login-hints {
