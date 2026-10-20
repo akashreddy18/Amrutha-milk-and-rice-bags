@@ -117,7 +117,7 @@ public class AmruthaApplication {
                         "(ఆవు పాలు / गाय का दूध)",
                         "100% natural, farm-fresh pure cow milk. Light, easy to digest, and rich in natural calcium. Daily morning & evening milking.",
                         BusinessUnit.DAIRY,
-                        new BigDecimal("68.00"),
+                        new BigDecimal("60.00"),
                         "Litre",
                         "Milk",
                         "Daily Fresh",
@@ -129,7 +129,7 @@ public class AmruthaApplication {
                         "(గేదె పాలు / भैंस का दूध)",
                         "Thick, high-fat natural buffalo milk (7%+ fat). Gives thick malai and thick curd. Ideal for tea, coffee, and traditional sweets.",
                         BusinessUnit.DAIRY,
-                        new BigDecimal("80.00"),
+                        new BigDecimal("75.00"),
                         "Litre",
                         "Milk",
                         "Thick & Creamy",
@@ -137,15 +137,81 @@ public class AmruthaApplication {
                 ));
 
                 productRepository.save(new Product(
-                        "Fresh Malai Paneer",
-                        "(పనీర్ / ताजा पनीर)",
-                        "Soft, melt-in-mouth cottage cheese crafted from pure whole milk. Vacuum packed for freshness.",
+                        "Fresh Malai Paneer (200g)",
+                        "(తాజా మలై పనీర్ / ताजा पनीर)",
+                        "Soft, melt-in-mouth cottage cheese crafted from pure whole milk. High in natural protein, spongy texture. 200g vacuum pack.",
                         BusinessUnit.DAIRY,
-                        new BigDecimal("120.00"),
-                        "250g",
-                        "Dairy",
+                        new BigDecimal("90.00"),
+                        "200g",
+                        "Paneer",
                         "Farm Fresh",
-                        "assets/images/fresh_paneer.jpg"
+                        "assets/images/fresh_paneer.jpg",
+                        80
+                ));
+
+                productRepository.save(new Product(
+                        "Fresh Malai Paneer (500g)",
+                        "(తాజా మలై పనీర్ / ताजा पनीर)",
+                        "Soft, melt-in-mouth cottage cheese crafted from pure whole milk. High in natural protein, spongy texture. 500g vacuum pack.",
+                        BusinessUnit.DAIRY,
+                        new BigDecimal("220.00"),
+                        "500g",
+                        "Paneer",
+                        "Farm Fresh",
+                        "assets/images/fresh_paneer.jpg",
+                        60
+                ));
+
+                productRepository.save(new Product(
+                        "Fresh Malai Paneer (1kg)",
+                        "(తాజా మలై పనీర్ / ताजा पनीर)",
+                        "Soft, melt-in-mouth cottage cheese crafted from pure whole milk. High in natural protein, spongy texture. 1kg vacuum pack.",
+                        BusinessUnit.DAIRY,
+                        new BigDecimal("430.00"),
+                        "1kg",
+                        "Paneer",
+                        "Farm Fresh",
+                        "assets/images/fresh_paneer.jpg",
+                        40
+                ));
+
+                productRepository.save(new Product(
+                        "Pure Desi Ghee (250ml)",
+                        "(స్వచ్ఛమైన దేశీ నెయ్యి / शुद्ध देसी घी)",
+                        "Golden, granular (danedar) desi ghee prepared by traditional churning of pure farm butter. Rich divine aroma. 250ml glass jar.",
+                        BusinessUnit.DAIRY,
+                        new BigDecimal("210.00"),
+                        "250ml",
+                        "Ghee",
+                        "Traditional Danedar",
+                        "assets/images/fresh_ghee.jpg",
+                        75
+                ));
+
+                productRepository.save(new Product(
+                        "Pure Desi Ghee (500ml)",
+                        "(స్వచ్ఛమైన దేశీ నెయ్యి / शुद्ध देसी घी)",
+                        "Golden, granular (danedar) desi ghee prepared by traditional churning of pure farm butter. Rich divine aroma. 500ml glass jar.",
+                        BusinessUnit.DAIRY,
+                        new BigDecimal("410.00"),
+                        "500ml",
+                        "Ghee",
+                        "Traditional Danedar",
+                        "assets/images/fresh_ghee.jpg",
+                        50
+                ));
+
+                productRepository.save(new Product(
+                        "Pure Desi Ghee (1 Litre)",
+                        "(స్వచ్ఛమైన దేశీ నెయ్యి / शुद्ध देसी घी)",
+                        "Golden, granular (danedar) desi ghee prepared by traditional churning of pure farm butter. Rich divine aroma. 1 Litre jar.",
+                        BusinessUnit.DAIRY,
+                        new BigDecimal("800.00"),
+                        "1 Litre",
+                        "Ghee",
+                        "Traditional Danedar",
+                        "assets/images/fresh_ghee.jpg",
+                        30
                 ));
 
                 // RICE PRODUCTS
@@ -156,6 +222,18 @@ public class AmruthaApplication {
                         BusinessUnit.RICE,
                         new BigDecimal("1450.00"),
                         "25kg Bag",
+                        "Rice",
+                        "Aged 12-18 Months",
+                        "assets/images/brand_rice_bag.jpg"
+                ));
+
+                productRepository.save(new Product(
+                        "Amrutha Sona Masoori Rice (50kg)",
+                        "(సోనా మసూరి బియ్యం / सोना मसूरी चावल)",
+                        "Finest medium-slender grain rice aged naturally for 12 to 18 months. Bulk family & catering standard pack.",
+                        BusinessUnit.RICE,
+                        new BigDecimal("2850.00"),
+                        "50kg Bag",
                         "Rice",
                         "Aged 12-18 Months",
                         "assets/images/brand_rice_bag.jpg"
@@ -183,16 +261,6 @@ public class AmruthaApplication {
                         "Rice",
                         "Silky & Aromatic",
                         "assets/images/kolam_rice_bag.jpg"
-                productRepository.save(new Product(
-                        "Amrutha Sona Masoori Rice (50kg)",
-                        "(సోనా మసూరి బియ్యం / सोना मसूरी चावल)",
-                        "Finest medium-slender grain rice aged naturally for 12 to 18 months. Bulk family & catering standard pack.",
-                        BusinessUnit.RICE,
-                        new BigDecimal("2850.00"),
-                        "50kg Bag",
-                        "Rice",
-                        "Aged 12-18 Months",
-                        "assets/images/brand_rice_bag.jpg"
                 ));
 
                 log.info("Initialized {} sample products.", productRepository.count());

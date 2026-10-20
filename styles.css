@@ -766,6 +766,53 @@ img {
   border-radius: var(--radius-sm);
 }
 
+/* Dairy Pack / Unit Selector (Paneer & Ghee) */
+.dairy-unit-selector-block {
+  margin-bottom: 16px;
+}
+
+.dairy-unit-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.dairy-unit-buttons-group {
+  display: flex;
+  gap: 8px;
+}
+
+.dairy-unit-btn {
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--milk-green-border);
+  background-color: #ffffff;
+  color: var(--milk-green);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.dairy-unit-btn:hover {
+  background-color: var(--milk-green-light);
+  border-color: var(--milk-green);
+}
+
+.dairy-unit-btn.active {
+  background-color: var(--milk-green);
+  border-color: var(--milk-green);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(22, 91, 51, 0.25);
+}
+
 .milk-price-box {
   background-color: var(--bg-subtle);
   border: 1px solid var(--border-light);

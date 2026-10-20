@@ -166,3 +166,22 @@ CREATE TABLE IF NOT EXISTS expenses (
     INDEX idx_expenses_category (category),
     INDEX idx_expenses_date (expense_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- -------------------------------------------------------------------
+-- 8. INITIAL SEED DATA (Products Catalog - Dairy & Rice)
+-- -------------------------------------------------------------------
+INSERT INTO products (name, local_name, description, business_unit, price, unit, stock_quantity, category, badge, image_url, active)
+VALUES
+    ('Pure Cow Milk', '(ఆవు పాలు / गाय का दूध)', '100% natural, farm-fresh pure cow milk. Wholesome, light, and easy to digest. Tested for fat & SNF daily. Zero water added.', 'DAIRY', 60.00, 'Litre', 100, 'Milk', 'Daily Fresh', 'assets/images/brand_milk_pouch.jpg', TRUE),
+    ('Pure Buffalo Milk', '(గేదె పాలు / भैंस का दूध)', 'Thick, high-fat natural buffalo milk (7%+ fat). Produces thick malai, excellent for tea, coffee, homemade dahi, and ghee.', 'DAIRY', 75.00, 'Litre', 100, 'Milk', 'Thick & Creamy', 'assets/images/buffalo_milk.jpg', TRUE),
+    ('Fresh Malai Paneer (200g)', '(తాజా మలై పనీర్ / ताजा पनीर)', 'Soft, melt-in-mouth cottage cheese crafted from 100% whole milk. High in natural protein, spongy texture. 200g vacuum pack.', 'DAIRY', 90.00, '200g', 80, 'Paneer', 'Farm Fresh', 'assets/images/fresh_paneer.jpg', TRUE),
+    ('Fresh Malai Paneer (500g)', '(తాజా మలై పనీర్ / ताजा पनीर)', 'Soft, melt-in-mouth cottage cheese crafted from 100% whole milk. High in natural protein, spongy texture. 500g vacuum pack.', 'DAIRY', 220.00, '500g', 60, 'Paneer', 'Farm Fresh', 'assets/images/fresh_paneer.jpg', TRUE),
+    ('Fresh Malai Paneer (1kg)', '(తాజా మలై పనీర్ / ताजा पनीर)', 'Soft, melt-in-mouth cottage cheese crafted from 100% whole milk. High in natural protein, spongy texture. 1kg vacuum pack.', 'DAIRY', 430.00, '1kg', 40, 'Paneer', 'Farm Fresh', 'assets/images/fresh_paneer.jpg', TRUE),
+    ('Pure Desi Ghee (250ml)', '(స్వచ్ఛమైన దేశీ నెయ్యి / शुद्ध देसी घी)', 'Golden, granular (danedar) desi ghee prepared by traditional churning of pure farm butter. Rich divine aroma. 250ml glass jar.', 'DAIRY', 210.00, '250ml', 75, 'Ghee', 'Traditional Danedar', 'assets/images/fresh_ghee.jpg', TRUE),
+    ('Pure Desi Ghee (500ml)', '(స్వచ్ఛమైన దేశీ నెయ్యి / शुद्ध देसी घी)', 'Golden, granular (danedar) desi ghee prepared by traditional churning of pure farm butter. Rich divine aroma. 500ml glass jar.', 'DAIRY', 410.00, '500ml', 50, 'Ghee', 'Traditional Danedar', 'assets/images/fresh_ghee.jpg', TRUE),
+    ('Pure Desi Ghee (1 Litre)', '(స్వచ్ఛమైన దేశీ నెయ్యి / शुद्ध देसी घी)', 'Golden, granular (danedar) desi ghee prepared by traditional churning of pure farm butter. Rich divine aroma. 1 Litre jar.', 'DAIRY', 800.00, '1 Litre', 30, 'Ghee', 'Traditional Danedar', 'assets/images/fresh_ghee.jpg', TRUE),
+    ('Amrutha Sona Masoori Rice (25kg)', '(సోనా మసూరి బియ్యం / सोना मसूरी चावल)', 'Finest medium-slender grain rice aged naturally for 12 to 18 months. Non-sticky, fluffy, and aromatic cooking for daily meals.', 'RICE', 1450.00, '25kg Bag', 120, 'Rice', 'Aged 12-18 Months', 'assets/images/brand_rice_bag.jpg', TRUE),
+    ('Amrutha Sona Masoori Rice (50kg)', '(సోనా మసూరి బియ్యం / सोना मसूरी चावल)', 'Finest medium-slender grain rice aged naturally for 12 to 18 months. Bulk family & catering standard pack.', 'RICE', 2850.00, '50kg Bag', 50, 'Rice', 'Aged 12-18 Months', 'assets/images/brand_rice_bag.jpg', TRUE),
+    ('Amrutha Royal Basmati Rice (25kg)', '(రాయల్ బాస్మతి బియ్యం / रॉयल बासमती चावल)', 'Exquisite Himalayan aged long-grain basmati rice. Each grain doubles in length without breaking. Perfect for Biryani and Pulao.', 'RICE', 2400.00, '25kg Bag', 80, 'Rice', 'Extra Long Grain', 'assets/images/basmati_rice_bag.jpg', TRUE),
+    ('Amrutha Deluxe BPT / Kolam Rice (25kg)', '(డీలక్స్ బియ్యం / डीलक्स बीपीटी चावल)', 'Silky white fine grain with tender bite. Cleaned, destoned, and naturally aged for delicious everyday meals.', 'RICE', 1580.00, '25kg Bag', 60, 'Rice', 'Silky & Aromatic', 'assets/images/kolam_rice_bag.jpg', TRUE);
+

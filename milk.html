@@ -259,61 +259,155 @@
             </div>
           </article>
 
-          <!-- 3. PANEER (Future Product - Marked COMING SOON) -->
-          <article class="milk-product-card card-coming-soon" id="cardPaneer">
+          <!-- 3. FRESH MALAI PANEER (Available) -->
+          <article class="milk-product-card" id="cardPaneer">
             <div class="milk-card-img-wrap">
               <img src="assets/images/fresh_paneer.jpg" alt="Fresh Malai Paneer cubes on banana leaf" width="400"
-                height="240" loading="lazy">
-              <span class="milk-card-badge badge-coming-soon">Coming Soon</span>
+                height="240" loading="eager">
+              <span class="milk-card-badge">Farm Fresh</span>
             </div>
 
             <div class="milk-card-details">
               <div class="milk-product-header">
                 <h2 class="milk-product-name">Fresh Malai Paneer</h2>
-                <span class="milk-local-name" style="color: var(--rice-gold);">పనీర్ &bull; ताजा पनीर</span>
+                <span class="milk-local-name">తాజా మలై పనీర్ &bull; ताजा पनीर</span>
               </div>
 
               <p class="milk-product-desc">
-                Future product: Ultra-soft cottage cheese crafted slowly from 100% full cream milk. High in natural
-                protein, spongy, and melt-in-mouth texture.
+                Soft, melt-in-mouth cottage cheese crafted from 100% whole milk. High in natural protein, spongy texture, zero preservatives. Vacuum packed for freshness.
               </p>
 
               <div class="milk-benefits-list">
-                <span class="benefit-tag"
-                  style="background-color: var(--rice-gold-light); color: var(--rice-gold-badge); border-color: var(--rice-gold-border);">High
-                  Protein</span>
-                <span class="benefit-tag"
-                  style="background-color: var(--rice-gold-light); color: var(--rice-gold-badge); border-color: var(--rice-gold-border);">Zero
-                  Preservatives</span>
-                <span class="benefit-tag"
-                  style="background-color: var(--rice-gold-light); color: var(--rice-gold-badge); border-color: var(--rice-gold-border);">Available
-                  Soon</span>
+                <span class="benefit-tag">100% Whole Milk</span>
+                <span class="benefit-tag">High Protein</span>
+                <span class="benefit-tag">Spongy &amp; Soft</span>
               </div>
 
-              <!-- Sample Reference Price -->
-              <div class="milk-price-box" style="opacity: 0.9;">
-                <div class="price-main-wrap">
-                  <span class="price-big-number" style="color: var(--text-muted);">₹120</span>
-                  <span class="price-per-unit">/ 250g</span>
+              <!-- Pack Size Selector -->
+              <div class="dairy-unit-selector-block">
+                <div class="dairy-unit-label-row">
+                  <span>Select Pack Size:</span>
+                  <span style="color: var(--text-muted); font-size: 0.82rem;">Vacuum Sealed</span>
                 </div>
-                <span class="sample-tag-badge">Sample Ref Price</span>
+                <div class="dairy-unit-buttons-group">
+                  <button type="button" class="dairy-unit-btn active" data-product="fresh-paneer" data-unit="200 g" data-price="90">200 g</button>
+                  <button type="button" class="dairy-unit-btn" data-product="fresh-paneer" data-unit="500 g" data-price="220">500 g</button>
+                  <button type="button" class="dairy-unit-btn" data-product="fresh-paneer" data-unit="1 kg" data-price="430">1 kg</button>
+                </div>
               </div>
 
-              <!-- Coming Soon Notice Box -->
-              <div class="coming-soon-notice-box">
-                <strong>⏳ Coming Soon!</strong><br>
-                This product is not available yet. We are setting up fresh paneer making in your village soon.
+              <!-- Price Box -->
+              <div class="milk-price-box">
+                <div class="price-main-wrap">
+                  <span class="price-big-number" id="priceDisplay-fresh-paneer">₹90</span>
+                  <span class="price-per-unit" id="unitDisplay-fresh-paneer">/ 200 g</span>
+                </div>
+                <span class="sample-tag-badge">Sample Price</span>
               </div>
 
-              <!-- Coming Soon Action Button -->
+              <!-- Quantity Selector -->
+              <div class="qty-selector-container">
+                <div class="qty-label-row">
+                  <span>Select Quantity:</span>
+                  <span style="color: var(--text-muted); font-size: 0.82rem;">1 to 15 Packs</span>
+                </div>
+                <div class="qty-control-box">
+                  <button type="button" class="qty-btn" data-product="fresh-paneer" data-action="decrease"
+                    aria-label="Decrease Paneer Quantity">−</button>
+                  <span class="qty-display-value" id="qtyVal-fresh-paneer">1 Pack</span>
+                  <button type="button" class="qty-btn" data-product="fresh-paneer" data-action="increase"
+                    aria-label="Increase Paneer Quantity">+</button>
+                </div>
+                <div class="item-subtotal-hint" id="itemSubtotal-fresh-paneer">
+                  Total: ₹90 (Sample Price)
+                </div>
+              </div>
+
+              <!-- Add to Cart Button -->
               <div class="card-btn-area">
-                <button type="button" class="btn btn-outline btn-lg"
-                  style="width: 100%; border-color: #cbd5e1; color: #475569;" id="btnPaneerNotify">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 14 14"></polyline>
+                <button type="button" class="btn btn-milk btn-lg btn-add-cart" data-product="fresh-paneer"
+                  id="btnAddPaneer">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
-                  Notify Me on WhatsApp
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 4. PURE DESI GHEE (Available) -->
+          <article class="milk-product-card" id="cardGhee">
+            <div class="milk-card-img-wrap">
+              <img src="assets/images/fresh_ghee.jpg" alt="Pure traditional Indian Desi Ghee in bowl" width="400"
+                height="240" loading="eager">
+              <span class="milk-card-badge">Traditional Danedar</span>
+            </div>
+
+            <div class="milk-card-details">
+              <div class="milk-product-header">
+                <h2 class="milk-product-name">Pure Desi Ghee</h2>
+                <span class="milk-local-name">స్వచ్ఛమైన దేశీ నెయ్యి &bull; शुद्ध देसी घी</span>
+              </div>
+
+              <p class="milk-product-desc">
+                Golden, granular (danedar) desi ghee prepared by traditional churning of pure farm butter. Rich divine aroma, healthy fats, and pure goodness.
+              </p>
+
+              <div class="milk-benefits-list">
+                <span class="benefit-tag">Golden Danedar</span>
+                <span class="benefit-tag">100% Pure Butterfat</span>
+                <span class="benefit-tag">Rich Divine Aroma</span>
+              </div>
+
+              <!-- Pack Size Selector -->
+              <div class="dairy-unit-selector-block">
+                <div class="dairy-unit-label-row">
+                  <span>Select Jar Size:</span>
+                  <span style="color: var(--text-muted); font-size: 0.82rem;">Glass Sealed</span>
+                </div>
+                <div class="dairy-unit-buttons-group">
+                  <button type="button" class="dairy-unit-btn active" data-product="pure-ghee" data-unit="250 ml" data-price="210">250 ml</button>
+                  <button type="button" class="dairy-unit-btn" data-product="pure-ghee" data-unit="500 ml" data-price="410">500 ml</button>
+                  <button type="button" class="dairy-unit-btn" data-product="pure-ghee" data-unit="1 litre" data-price="800">1 Litre</button>
+                </div>
+              </div>
+
+              <!-- Price Box -->
+              <div class="milk-price-box">
+                <div class="price-main-wrap">
+                  <span class="price-big-number" id="priceDisplay-pure-ghee">₹210</span>
+                  <span class="price-per-unit" id="unitDisplay-pure-ghee">/ 250 ml</span>
+                </div>
+                <span class="sample-tag-badge">Sample Price</span>
+              </div>
+
+              <!-- Quantity Selector -->
+              <div class="qty-selector-container">
+                <div class="qty-label-row">
+                  <span>Select Quantity:</span>
+                  <span style="color: var(--text-muted); font-size: 0.82rem;">1 to 15 Jars</span>
+                </div>
+                <div class="qty-control-box">
+                  <button type="button" class="qty-btn" data-product="pure-ghee" data-action="decrease"
+                    aria-label="Decrease Ghee Quantity">−</button>
+                  <span class="qty-display-value" id="qtyVal-pure-ghee">1 Jar</span>
+                  <button type="button" class="qty-btn" data-product="pure-ghee" data-action="increase"
+                    aria-label="Increase Ghee Quantity">+</button>
+                </div>
+                <div class="item-subtotal-hint" id="itemSubtotal-pure-ghee">
+                  Total: ₹210 (Sample Price)
+                </div>
+              </div>
+
+              <!-- Add to Cart Button -->
+              <div class="card-btn-area">
+                <button type="button" class="btn btn-milk btn-lg btn-add-cart" data-product="pure-ghee"
+                  id="btnAddGhee">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Add to Cart
                 </button>
               </div>
             </div>

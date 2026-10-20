@@ -96,18 +96,46 @@ const SITE_CONFIG = {
       {
         id: "fresh-paneer",
         name: "Fresh Malai Paneer",
-        localName: "(పనీర్ / ताजा पनीर)",
-        status: "coming_soon",
-        badge: "Coming Soon",
+        localName: "(తాజా మలై పనీర్ / ताजा पनीर)",
+        status: "available",
+        badge: "Farm Fresh",
         image: "assets/images/fresh_paneer.jpg",
-        imageAlt: "Fresh white malai paneer cubes on leaf",
-        price: 120, // Sample price for reference
-        unit: "250g",
-        priceFormatted: "₹120",
-        sampleLabel: "Sample Reference Price",
-        defaultQty: 0,
-        description: "Future Product: Soft, melt-in-mouth cottage cheese crafted from 100% pure whole milk. Hygienically vacuum packed.",
-        benefits: ["High Protein", "100% Pure Milk", "Available Soon in Your Village"]
+        imageAlt: "Fresh white malai paneer cubes on banana leaf",
+        price: 90,
+        unit: "200 g",
+        priceFormatted: "₹90",
+        sampleLabel: "Sample Price",
+        defaultQty: 1,
+        description: "Soft, melt-in-mouth cottage cheese crafted from 100% whole milk. High in natural protein, spongy texture, zero preservatives. Vacuum packed for freshness.",
+        benefits: ["100% Whole Milk", "High Protein", "Spongy & Soft"],
+        defaultSize: "200 g",
+        sizes: [
+          { size: "200 g", label: "200 g", examplePrice: 90, formatted: "₹90" },
+          { size: "500 g", label: "500 g", examplePrice: 220, formatted: "₹220" },
+          { size: "1 kg", label: "1 kg", examplePrice: 430, formatted: "₹430" }
+        ]
+      },
+      {
+        id: "pure-ghee",
+        name: "Pure Desi Ghee",
+        localName: "(స్వచ్ఛమైన దేశీ నెయ్యి / शुद्ध देसी घी)",
+        status: "available",
+        badge: "Traditional Danedar",
+        image: "assets/images/fresh_ghee.jpg",
+        imageAlt: "Pure golden traditional desi ghee in bowl",
+        price: 210,
+        unit: "250 ml",
+        priceFormatted: "₹210",
+        sampleLabel: "Sample Price",
+        defaultQty: 1,
+        description: "Golden, granular (danedar) desi ghee prepared by traditional churning of pure farm butter. Rich divine aroma, healthy fats, and pure goodness.",
+        benefits: ["Golden Granular Aroma", "100% Pure Butterfat", "No Artificial Essence"],
+        defaultSize: "250 ml",
+        sizes: [
+          { size: "250 ml", label: "250 ml", examplePrice: 210, formatted: "₹210" },
+          { size: "500 ml", label: "500 ml", examplePrice: 410, formatted: "₹410" },
+          { size: "1 litre", label: "1 Litre", examplePrice: 800, formatted: "₹800" }
+        ]
       }
     ]
   },

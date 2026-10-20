@@ -1124,7 +1124,20 @@
           </div>
           <div class="form-group col">
             <label for="prodUnit">Unit Specification *</label>
-            <input type="text" id="prodUnit" class="form-control" required placeholder="e.g. Litre, 25kg Bag, 500g">
+            <input type="text" id="prodUnit" list="unitSuggestions" class="form-control" required placeholder="e.g. 200g, 500g, 1kg, 250ml, 500ml, 1 Litre, Litre">
+            <datalist id="unitSuggestions">
+              <option value="200g"></option>
+              <option value="500g"></option>
+              <option value="1kg"></option>
+              <option value="250ml"></option>
+              <option value="500ml"></option>
+              <option value="1 Litre"></option>
+              <option value="Litre"></option>
+              <option value="50kg Bag"></option>
+              <option value="25kg Bag"></option>
+              <option value="10kg Bag"></option>
+              <option value="5kg Bag"></option>
+            </datalist>
           </div>
           <div class="form-group col">
             <label for="prodStock">Initial Stock *</label>

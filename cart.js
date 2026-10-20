@@ -127,7 +127,7 @@ const AmruthaCart = (function() {
       totalItems += item.qty;
       grandTotal += subtotal;
 
-      if (item.category === 'milk') {
+      if (item.category === 'milk' || item.category === 'dairy') {
         milkTotal += subtotal;
       } else {
         riceTotal += subtotal;
@@ -340,10 +340,23 @@ const AmruthaCart = (function() {
       let html = '<div class="cart-items-wrapper">';
 
       summary.items.forEach(item => {
-        const isMilk = item.category === 'milk';
-        const badgeColor = isMilk ? 'var(--milk-green)' : 'var(--rice-gold)';
-        const badgeBg = isMilk ? 'var(--milk-green-light)' : 'var(--rice-gold-light)';
-        const categoryLabel = isMilk ? '🥛 Fresh Milk' : '🌾 Premium Rice';
+        const isMilk = item.category === 'milk' || item.category === 'dairy';
+        let badgeColor = 'var(--rice-gold)';
+        let badgeBg = 'var(--rice-gold-light)';
+        let categoryLabel = '🌾 Premium Rice';
+
+        if (isMilk) {
+          badgeColor = 'var(--milk-green)';
+          badgeBg = 'var(--milk-green-light)';
+          const nameLower = (item.name || '').toLowerCase();
+          if (nameLower.includes('paneer')) {
+            categoryLabel = '🧀 Fresh Paneer';
+          } else if (nameLower.includes('ghee')) {
+            categoryLabel = '🧈 Pure Desi Ghee';
+          } else {
+            categoryLabel = '🥛 Fresh Milk';
+          }
+        }
 
         html += `
           <div class="cart-product-row">
@@ -622,15 +635,15 @@ const AmruthaCart = (function() {
     const custAddress = document.getElementById('unifiedCustAddress')?.value.trim() || 'Not specified';
     const deliverySlot = document.getElementById('unifiedDeliverySlot')?.value || 'Morning Delivery (5:30 AM – 7:30 AM)';
 
-    const milkItems = summary.items.filter(i => i.category === 'milk');
+    const milkItems = summary.items.filter(i => i.category === 'milk' || i.category === 'dairy');
     const riceItems = summary.items.filter(i => i.category === 'rice');
 
     let itemsText = '';
 
     if (milkItems.length > 0) {
-      itemsText += `\n*🥛 AMRUTHA FRESH MILK ITEMS:*\n`;
+      itemsText += `\n*🥛 AMRUTHA FRESH DAIRY ITEMS:*\n`;
       milkItems.forEach(i => {
-        itemsText += `• ${i.name} (${i.size || '1L'}): ${i.qty} ${i.unit} × ₹${i.price} = ₹${i.subtotal.toLocaleString('en-IN')}\n`;
+        itemsText += `• ${i.name} (${i.size || i.unit || 'Standard'}): ${i.qty} ${i.unit || 'Pack'} × ₹${i.price} = ₹${i.subtotal.toLocaleString('en-IN')}\n`;
       });
     }
 
