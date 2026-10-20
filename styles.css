@@ -3847,7 +3847,886 @@ img {
   color: #92400e;
 }
 
+/* ==========================================================================
+   AMRUTHA MILK SUBSCRIPTION SYSTEM (CUSTOMER & ADMIN)
+   ========================================================================== */
 
+/* Subscription Builder Section */
+.subscription-section {
+  padding: 56px 0 64px 0;
+  background: linear-gradient(180deg, #f8fbf9 0%, #edf7f1 100%);
+  border-top: 2px solid #d7eade;
+  border-bottom: 2px solid #d7eade;
+  margin-top: 20px;
+  position: relative;
+}
 
+.sub-header-wrapper {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 36px auto;
+}
 
+.sub-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e0f2e7;
+  color: #165b33;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  border: 1px solid #b7dfc6;
+}
 
+.sub-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #165b33;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+}
+
+.sub-section-subtitle {
+  font-size: 1.05rem;
+  color: #4b6354;
+  line-height: 1.55;
+  margin: 0 0 16px 0;
+}
+
+.sub-portal-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: #ffffff;
+  color: #165b33;
+  border: 1.5px solid #165b33;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.sub-portal-link-btn:hover {
+  background-color: #165b33;
+  color: #ffffff;
+}
+
+/* Two-Column Subscription Builder Layout */
+.sub-builder-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .sub-builder-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left: Steps Container */
+.sub-steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.sub-step-card {
+  background-color: #ffffff;
+  border: 1.5px solid #d4e7db;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(22, 91, 51, 0.04);
+}
+
+.sub-step-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #165b33;
+  margin: 0 0 18px 0;
+}
+
+.step-num-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #165b33;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Variety Option Cards */
+.sub-variety-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.sub-variety-option {
+  position: relative;
+  background-color: #f9fbf9;
+  border: 2px solid #d1e5d7;
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.sub-variety-option:hover {
+  border-color: #165b33;
+  background-color: #ffffff;
+}
+
+.sub-variety-option.selected {
+  border-color: #165b33;
+  background-color: #f0f8f3;
+  box-shadow: 0 6px 18px rgba(22, 91, 51, 0.12);
+}
+
+.variety-check-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: transparent;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.sub-variety-option.selected .variety-check-icon {
+  background: #165b33;
+  border-color: #165b33;
+  color: #ffffff;
+}
+
+.variety-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.variety-icon {
+  font-size: 1.4rem;
+}
+
+.variety-name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #1a3323;
+}
+
+.variety-rate {
+  font-size: 0.92rem;
+  color: #165b33;
+  font-weight: 700;
+}
+
+.variety-badge {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+/* Pills Group for Daily Quantity & Duration */
+.sub-pills-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.sub-pill-btn {
+  background-color: #f9fbf9;
+  border: 2px solid #d1e5d7;
+  border-radius: 12px;
+  padding: 14px 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e3a29;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.sub-pill-btn:hover {
+  border-color: #165b33;
+  background-color: #ffffff;
+}
+
+.sub-pill-btn.selected {
+  border-color: #165b33;
+  background-color: #165b33;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(22, 91, 51, 0.18);
+}
+
+.sub-pill-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.sub-pill-btn.selected .sub-pill-tag {
+  background-color: #ffffff;
+  color: #165b33;
+}
+
+/* Delivery Slot Selector */
+.sub-slots-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.sub-slot-btn {
+  background-color: #f9fbf9;
+  border: 2px solid #d1e5d7;
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.sub-slot-btn:hover {
+  border-color: #165b33;
+  background-color: #ffffff;
+}
+
+.sub-slot-btn.selected {
+  border-color: #165b33;
+  background-color: #f0f8f3;
+  box-shadow: 0 4px 12px rgba(22, 91, 51, 0.12);
+}
+
+.sub-slot-title {
+  font-weight: 800;
+  font-size: 0.96rem;
+  color: #165b33;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.sub-slot-time {
+  font-size: 0.82rem;
+  color: #556c59;
+}
+
+/* Date & Address Inputs */
+.sub-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 640px) {
+  .sub-input-row,
+  .sub-variety-grid,
+  .sub-slots-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sub-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sub-form-group label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1e3a29;
+}
+
+.sub-form-control {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 14px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  border: 1.5px solid #c9ded0;
+  border-radius: 10px;
+  background-color: #fbfdfb;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.sub-form-control:focus {
+  border-color: #165b33;
+  background-color: #ffffff;
+}
+
+/* Right Column: Live Pricing & Plan Summary Card */
+.sub-summary-card {
+  background-color: #ffffff;
+  border: 2px solid #165b33;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 12px 36px rgba(22, 91, 51, 0.08);
+  position: sticky;
+  top: 90px;
+}
+
+.summary-card-header {
+  border-bottom: 1.5px solid #e2ece5;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-card-header h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #165b33;
+  margin: 0;
+}
+
+.summary-badge {
+  background-color: #d1fae5;
+  color: #065f46;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.summary-lines-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.summary-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.93rem;
+  color: #4b6354;
+}
+
+.summary-line strong {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.summary-divider {
+  border: 0;
+  border-top: 1.5px dashed #cbd5e1;
+  margin: 6px 0;
+}
+
+.summary-total-box {
+  background: radial-gradient(circle at 10% 10%, #f0fbf4 0%, #e1f5e8 100%);
+  border: 2px solid #a7dfb8;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.total-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #165b33;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.total-amount-display {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #165b33;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.total-micro-note {
+  font-size: 0.8rem;
+  color: #3b7450;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.btn-sub-confirm {
+  width: 100%;
+  background: linear-gradient(135deg, #165b33 0%, #1e7a45 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(22, 91, 51, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-sub-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(22, 91, 51, 0.35);
+  background: linear-gradient(135deg, #134e2c 0%, #165b33 100%);
+}
+
+.sub-guarantee-note {
+  font-size: 0.78rem;
+  color: #64748b;
+  text-align: center;
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   CUSTOMER ORDERS & SUBSCRIPTIONS DRAWER / MODAL
+   ========================================================================== */
+.portal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.portal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.portal-dialog {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  transform: translateY(20px);
+  transition: transform 0.25s ease;
+}
+
+.portal-backdrop.open .portal-dialog {
+  transform: translateY(0);
+}
+
+.portal-dialog-header {
+  padding: 20px 24px;
+  background-color: #f7faf8;
+  border-bottom: 1.5px solid #e2ece5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.portal-dialog-header h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #165b33;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.portal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #64748b;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.portal-close-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.portal-dialog-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Phone Lookup Form */
+.portal-lookup-card {
+  background: #f8faf9;
+  border: 1.5px solid #d7eade;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 24px;
+}
+
+.portal-lookup-form {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+@media (max-width: 580px) {
+  .portal-lookup-form {
+    flex-direction: column;
+  }
+}
+
+.portal-sub-tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.btn-portal-tab {
+  background: none;
+  border: none;
+  padding: 10px 18px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-portal-tab.active {
+  color: #165b33;
+  border-bottom-color: #165b33;
+}
+
+/* Subscription Card Item */
+.sub-portal-card {
+  background-color: #ffffff;
+  border: 1.5px solid #d7eade;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease;
+}
+
+.sub-portal-card:hover {
+  border-color: #165b33;
+}
+
+.sub-portal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sub-number-badge {
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #165b33;
+  background-color: #e8f5ed;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.sub-status-pill {
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sub-status-pill.status-active {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.sub-status-pill.status-paused {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.sub-status-pill.status-cancelled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.sub-status-pill.status-completed {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+.sub-portal-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+  background-color: #f9fbf9;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.sub-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sub-detail-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sub-detail-val {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.sub-portal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.btn-sub-pause {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1.5px solid #fde68a;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sub-pause:hover {
+  background-color: #fde68a;
+}
+
+.btn-sub-resume {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1.5px solid #bbf7d0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sub-resume:hover {
+  background-color: #bbf7d0;
+}
+
+.btn-sub-cancel {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1.5px solid #fecaca;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sub-cancel:hover {
+  background-color: #fecaca;
+}
+
+/* ==========================================================================
+   ADMIN SUBSCRIPTION & DEMAND FORECASTING STYLES
+   ========================================================================== */
+.admin-demand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.demand-metric-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1.5px solid #d7eade;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.demand-metric-card.highlight {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #86efac;
+}
+
+.demand-metric-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #4b6354;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.demand-metric-val {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #165b33;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.demand-metric-sub {
+  font-size: 0.82rem;
+  color: #556c59;
+  margin-top: 4px;
+}
+
+.demand-shifts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 768px) {
+  .demand-shifts-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.demand-shift-card {
+  background-color: #ffffff;
+  border: 1.5px solid #d7eade;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.demand-shift-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid #edf4ef;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+
+.demand-shift-header h4 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #165b33;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.demand-shift-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.demand-shift-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+.demand-shift-row strong {
+  color: #165b33;
+  font-size: 1.1rem;
+}
+
+.sub-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.sub-filter-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-sub-filter {
+  background-color: #ffffff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sub-filter.active {
+  background-color: #165b33;
+  border-color: #165b33;
+  color: #ffffff;
+}

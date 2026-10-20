@@ -116,6 +116,92 @@ const AmruthaAPI = (function() {
      */
     async getOrderByNumber(orderNumber) {
       return await request(`/orders/number/${encodeURIComponent(orderNumber)}`);
+    },
+
+    /**
+     * Starts a new daily milk subscription
+     */
+    async createSubscription(subscriptionData) {
+      return await request('/subscriptions', {
+        method: 'POST',
+        body: JSON.stringify(subscriptionData)
+      });
+    },
+
+    /**
+     * Retrieves active and past subscriptions for customer phone
+     */
+    async getCustomerSubscriptions(phone) {
+      return await request(`/subscriptions/customer/${encodeURIComponent(phone)}`);
+    },
+
+    /**
+     * Pauses an active subscription
+     */
+    async pauseSubscription(id) {
+      return await request(`/subscriptions/${encodeURIComponent(id)}/pause`, {
+        method: 'PATCH'
+      });
+    },
+
+    /**
+     * Resumes a paused subscription
+     */
+    async resumeSubscription(id) {
+      return await request(`/subscriptions/${encodeURIComponent(id)}/resume`, {
+        method: 'PATCH'
+      });
+    },
+
+    /**
+     * Cancels a subscription
+     */
+    async cancelSubscription(id) {
+      return await request(`/subscriptions/${encodeURIComponent(id)}/cancel`, {
+        method: 'PATCH'
+      });
+    },
+
+    /**
+     * Retrieves daily required milk volumes for delivery scheduling (Admin)
+     */
+    async getDailyDemand(date) {
+      const q = date ? `?date=${encodeURIComponent(date)}` : '';
+      return await request(`/admin/subscriptions/daily-demand${q}`);
+    },
+
+    /**
+     * Retrieves all subscriptions (Admin)
+     */
+    async getSubscriptions(status) {
+      const q = status ? `?status=${encodeURIComponent(status)}` : '';
+      return await request(`/admin/subscriptions${q}`);
+    },
+
+    /**
+     * Updates subscription status: ACTIVE, PAUSED, CANCELLED, COMPLETED (Admin)
+     */
+    async updateSubscriptionStatus(id, status, notes) {
+      return await request(`/admin/subscriptions/${encodeURIComponent(id)}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status, notes: notes || '' })
+      });
+    },
+
+    /**
+     * Updates subscription payment status: PENDING, PAID, REFUNDED (Admin)
+     */
+    async updateSubscriptionPayment(id, paymentStatus) {
+      return await request(`/admin/subscriptions/${encodeURIComponent(id)}/payment?paymentStatus=${encodeURIComponent(paymentStatus)}`, {
+        method: 'PATCH'
+      });
+    },
+
+    /**
+     * Retrieves customer orders by phone
+     */
+    async getCustomerOrders(phone) {
+      return await request(`/orders/customer/${encodeURIComponent(phone)}`);
     }
   };
 })();

@@ -128,6 +128,38 @@ CREATE TABLE IF NOT EXISTS order_items (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- -------------------------------------------------------------------
+-- 5B. SUBSCRIPTIONS TABLE (Customer Daily Milk Subscriptions)
+-- -------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS subscriptions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    subscription_number VARCHAR(50) NOT NULL UNIQUE,
+    customer_id BIGINT NOT NULL,
+    customer_name VARCHAR(120) NOT NULL,
+    customer_phone VARCHAR(30) NOT NULL,
+    delivery_address VARCHAR(500) NOT NULL,
+    milk_type VARCHAR(50) NOT NULL COMMENT 'Pure Cow Milk or Pure Buffalo Milk',
+    daily_quantity VARCHAR(20) NOT NULL COMMENT '500 ml, 1 Litre, 2 Litres',
+    daily_quantity_litres DECIMAL(5, 2) NOT NULL,
+    duration_days INT NOT NULL COMMENT '7 or 30 days',
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    delivery_slot VARCHAR(100) NOT NULL COMMENT 'Morning (5:30 AM – 7:30 AM), Evening (5:00 PM – 7:00 PM)',
+    daily_rate DECIMAL(10, 2) NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    payment_status VARCHAR(30) NOT NULL DEFAULT 'PENDING' COMMENT 'PENDING, PAID',
+    status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE' COMMENT 'ACTIVE, PAUSED, CANCELLED, COMPLETED',
+    paused_date DATE,
+    notes VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE RESTRICT,
+    INDEX idx_sub_customer_phone (customer_phone),
+    INDEX idx_sub_status (status),
+    INDEX idx_sub_dates (start_date, end_date),
+    INDEX idx_sub_slot (delivery_slot)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- -------------------------------------------------------------------
 -- 6. PURCHASES TABLE (Raw Material Procurement - Cost of Goods Sold)
 -- -------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS purchases (

@@ -76,6 +76,16 @@ public class OrderController {
     }
 
     /**
+     * GET /api/orders/customer/{phone}
+     * Retrieves all orders for a customer by phone number.
+     */
+    @GetMapping("/customer/{phone}")
+    public ResponseEntity<ApiResponse<List<OrderResponseDto>>> getOrdersByCustomerPhone(@PathVariable String phone) {
+        List<OrderResponseDto> orders = orderService.getOrdersByCustomerPhone(phone);
+        return ResponseEntity.ok(ApiResponse.ok("Retrieved " + orders.size() + " orders for customer", orders));
+    }
+
+    /**
      * PATCH /api/orders/{id}/status
      * Updates an order status (e.g. PACKED, OUT_FOR_DELIVERY, DELIVERED, CANCELLED).
      */

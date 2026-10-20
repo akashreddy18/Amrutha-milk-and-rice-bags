@@ -70,6 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load live products from backend (or fallback smoothly)
   loadDairyProducts();
 
+  // Initialize Milk Subscription System
+  initSubscriptionBuilder();
+  initCustomerPortal();
+
   // Mobile Floating Bar Trigger
   const btnFloatingViewCart = document.getElementById('btnFloatingViewCart');
   if (btnFloatingViewCart) {
@@ -534,4 +538,764 @@ function updateCardSubtotal(prodKey) {
     const total = item.price * item.qty;
     subtotalEl.textContent = `Total: ₹${total.toLocaleString('en-IN')}`;
   }
+}
+
+/* ==========================================================================
+   AMRUTHA MILK SUBSCRIPTION & CUSTOMER PORTAL LOGIC
+   ========================================================================== */
+
+const SUB_PRICING = {
+  'Cow Milk': {
+    '500 ml': 30,
+    '1 Litre': 60,
+    '2 Litres': 120
+  },
+  'Buffalo Milk': {
+    '500 ml': 38,
+    '1 Litre': 75,
+    '2 Litres': 150
+  }
+};
+
+let subBuilderState = {
+  variety: 'Cow Milk',
+  quantity: '1 Litre',
+  durationDays: 30,
+  deliverySlot: 'Morning Delivery (5:30 AM – 7:30 AM)',
+  startDate: '',
+  endDate: '',
+  dailyRate: 60,
+  totalAmount: 1800
+};
+
+/**
+ * Initializes the Daily Milk Subscription Builder
+ */
+function initSubscriptionBuilder() {
+  const startDateInput = document.getElementById('subStartDate');
+  if (!startDateInput) return;
+
+  // Set default start date to tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDateStr = tomorrow.toISOString().split('T')[0];
+  startDateInput.min = minDateStr;
+  startDateInput.value = minDateStr;
+  subBuilderState.startDate = minDateStr;
+
+  // Auto-fill customer details from localStorage if previously used
+  const savedPhone = localStorage.getItem('amrutha_customer_phone');
+  const savedName = localStorage.getItem('amrutha_customer_name');
+  const savedAddr = localStorage.getItem('amrutha_customer_address');
+  if (savedPhone) {
+    const phoneInput = document.getElementById('subCustPhone');
+    if (phoneInput) phoneInput.value = savedPhone;
+  }
+  if (savedName) {
+    const nameInput = document.getElementById('subCustName');
+    if (nameInput) nameInput.value = savedName;
+  }
+  if (savedAddr) {
+    const addrInput = document.getElementById('subCustAddress');
+    if (addrInput) addrInput.value = savedAddr;
+  }
+
+  // 1. Variety Selection (Cow vs Buffalo Milk)
+  const optCow = document.getElementById('optCowMilk');
+  const optBuffalo = document.getElementById('optBuffaloMilk');
+
+  if (optCow) {
+    optCow.addEventListener('click', () => {
+      subBuilderState.variety = 'Cow Milk';
+      optCow.classList.add('selected');
+      if (optBuffalo) optBuffalo.classList.remove('selected');
+      recalculateSubscription();
+    });
+  }
+
+  if (optBuffalo) {
+    optBuffalo.addEventListener('click', () => {
+      subBuilderState.variety = 'Buffalo Milk';
+      optBuffalo.classList.add('selected');
+      if (optCow) optCow.classList.remove('selected');
+      recalculateSubscription();
+    });
+  }
+
+  // 2. Quantity Selection Pills
+  const qtyPills = document.querySelectorAll('#subQtyPills .sub-pill-btn');
+  qtyPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      qtyPills.forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+      subBuilderState.quantity = pill.getAttribute('data-qty');
+      recalculateSubscription();
+    });
+  });
+
+  // 3. Duration Selection Pills (7 Days vs 30 Days)
+  const durationPills = document.querySelectorAll('#subDurationPills .sub-pill-btn');
+  durationPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      durationPills.forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+      subBuilderState.durationDays = parseInt(pill.getAttribute('data-duration'), 10) || 30;
+      recalculateSubscription();
+    });
+  });
+
+  // 4. Delivery Slot Buttons
+  const slotBtns = document.querySelectorAll('.sub-slot-btn');
+  slotBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      slotBtns.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      subBuilderState.deliverySlot = btn.getAttribute('data-slot');
+      recalculateSubscription();
+    });
+  });
+
+  // 5. Start Date Change
+  startDateInput.addEventListener('change', () => {
+    subBuilderState.startDate = startDateInput.value;
+    recalculateSubscription();
+  });
+
+  // 6. Confirm Subscription Button
+  const btnConfirm = document.getElementById('btnConfirmSubscription');
+  if (btnConfirm) {
+    btnConfirm.addEventListener('click', handleSubscriptionSubmit);
+  }
+
+  // Initial Calculation
+  recalculateSubscription();
+}
+
+/**
+ * Live recalculation of subscription pricing and schedule
+ */
+function recalculateSubscription() {
+  const variety = subBuilderState.variety || 'Cow Milk';
+  const qty = subBuilderState.quantity || '1 Litre';
+  const days = subBuilderState.durationDays || 30;
+
+  // Compute daily rate & total amount
+  const rate = (SUB_PRICING[variety] && SUB_PRICING[variety][qty]) ? SUB_PRICING[variety][qty] : 60;
+  const total = rate * days;
+
+  subBuilderState.dailyRate = rate;
+  subBuilderState.totalAmount = total;
+
+  // Compute End Date
+  let startDate = new Date(subBuilderState.startDate || Date.now());
+  if (isNaN(startDate.getTime())) {
+    startDate = new Date();
+    startDate.setDate(startDate.getDate() + 1);
+  }
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + (days - 1));
+
+  const startFormatted = startDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  const endFormatted = endDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  subBuilderState.endDate = endDate.toISOString().split('T')[0];
+
+  // Update Summary UI
+  const sumVariety = document.getElementById('sumVarietyText');
+  const sumQty = document.getElementById('sumDailyQtyText');
+  const sumRate = document.getElementById('sumDailyRateText');
+  const sumDuration = document.getElementById('sumDurationText');
+  const sumSlot = document.getElementById('sumSlotText');
+  const sumDateRange = document.getElementById('sumDateRangeText');
+  const sumTotal = document.getElementById('sumTotalPayable');
+  const sumBadge = document.getElementById('sumBadgePlan');
+
+  if (sumVariety) sumVariety.textContent = variety;
+  if (sumQty) sumQty.textContent = `${qty} / day`;
+  if (sumRate) sumRate.textContent = `₹${rate.toFixed(2)} / day`;
+  if (sumDuration) sumDuration.textContent = `${days} Days (${days} Deliveries)`;
+  if (sumSlot) sumSlot.textContent = subBuilderState.deliverySlot.includes('Morning') ? '🌅 Morning (5:30 – 7:30 AM)' : '🌇 Evening (5:00 – 7:00 PM)';
+  if (sumDateRange) sumDateRange.textContent = `${startFormatted} → ${endFormatted}`;
+  if (sumTotal) sumTotal.textContent = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (sumBadge) sumBadge.textContent = `${days} Days Plan`;
+}
+
+/**
+ * Handles Subscription Creation & Submission
+ */
+async function handleSubscriptionSubmit(e) {
+  if (e) e.preventDefault();
+
+  const nameInput = document.getElementById('subCustName');
+  const phoneInput = document.getElementById('subCustPhone');
+  const addrInput = document.getElementById('subCustAddress');
+  const btn = document.getElementById('btnConfirmSubscription');
+
+  const name = nameInput ? nameInput.value.trim() : '';
+  const phone = phoneInput ? phoneInput.value.trim() : '';
+  const address = addrInput ? addrInput.value.trim() : '';
+  const startDate = subBuilderState.startDate;
+
+  if (!name || name.length < 2) {
+    alert('Please enter your full customer name.');
+    if (nameInput) nameInput.focus();
+    return;
+  }
+
+  const cleanPhone = phone.replace(/\D/g, '');
+  if (cleanPhone.length < 10) {
+    alert('Please enter a valid 10-digit mobile number.');
+    if (phoneInput) phoneInput.focus();
+    return;
+  }
+
+  if (!address || address.length < 5) {
+    alert('Please enter your complete doorstep delivery address / village.');
+    if (addrInput) addrInput.focus();
+    return;
+  }
+
+  if (!startDate) {
+    alert('Please select a valid delivery start date.');
+    return;
+  }
+
+  // Save customer details in localStorage
+  localStorage.setItem('amrutha_customer_phone', cleanPhone);
+  localStorage.setItem('amrutha_customer_name', name);
+  localStorage.setItem('amrutha_customer_address', address);
+
+  // Disable button while processing
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳ Activating Subscription...</span>';
+  }
+
+  const payload = {
+    customerName: name,
+    customerPhone: cleanPhone,
+    deliveryAddress: address,
+    milkType: subBuilderState.variety,
+    dailyQuantity: subBuilderState.quantity,
+    durationDays: subBuilderState.durationDays,
+    startDate: startDate,
+    deliverySlot: subBuilderState.deliverySlot
+  };
+
+  let newSub = null;
+
+  try {
+    if (typeof AmruthaAPI !== 'undefined' && AmruthaAPI.createSubscription) {
+      const res = await AmruthaAPI.createSubscription(payload);
+      if (res && res.success && res.data) {
+        newSub = res.data;
+      }
+    }
+  } catch (err) {
+    console.warn('Subscription API unavailable; saving locally:', err);
+  }
+
+  // Fallback: Store locally if backend is offline
+  if (!newSub) {
+    const localId = Date.now();
+    const subNum = `SUB-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+    newSub = {
+      id: localId,
+      subscriptionNumber: subNum,
+      customerName: name,
+      customerPhone: cleanPhone,
+      deliveryAddress: address,
+      milkType: subBuilderState.variety,
+      dailyQuantity: subBuilderState.quantity,
+      dailyQuantityLitres: subBuilderState.quantity.includes('500') ? 0.5 : (subBuilderState.quantity.includes('2') ? 2.0 : 1.0),
+      durationDays: subBuilderState.durationDays,
+      startDate: startDate,
+      endDate: subBuilderState.endDate,
+      deliverySlot: subBuilderState.deliverySlot,
+      dailyRate: subBuilderState.dailyRate,
+      totalAmount: subBuilderState.totalAmount,
+      paymentStatus: 'PENDING',
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString()
+    };
+
+    saveLocalSubscription(newSub);
+  }
+
+  // Restore button
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>🚀 Confirm &amp; Activate Subscription</span>';
+  }
+
+  // Toast notification
+  if (typeof showToast === 'function') {
+    showToast(`🎉 Subscription ${newSub.subscriptionNumber} activated successfully!`);
+  } else {
+    alert(`🎉 Subscription ${newSub.subscriptionNumber} activated successfully!`);
+  }
+
+  // Open customer portal and show the new subscription
+  openCustomerPortal(cleanPhone);
+}
+
+/**
+ * Saves subscription to localStorage for offline / GitHub Pages mode
+ */
+function saveLocalSubscription(sub) {
+  try {
+    const list = getLocalSubscriptions();
+    const existingIndex = list.findIndex(s => s.id === sub.id || s.subscriptionNumber === sub.subscriptionNumber);
+    if (existingIndex >= 0) {
+      list[existingIndex] = sub;
+    } else {
+      list.unshift(sub);
+    }
+    localStorage.setItem('amrutha_local_subscriptions', JSON.stringify(list));
+  } catch (e) {
+    console.error('Failed to save subscription locally', e);
+  }
+}
+
+/**
+ * Retrieves local subscriptions from localStorage
+ */
+function getLocalSubscriptions() {
+  try {
+    const raw = localStorage.getItem('amrutha_local_subscriptions');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+/**
+ * Initializes Customer Portal Modal (My Orders & Subscriptions)
+ */
+function initCustomerPortal() {
+  const modal = document.getElementById('customerPortalModal');
+  const btnOpenTop = document.getElementById('btnOpenCustomerPortal');
+  const btnManageTop = document.getElementById('btnManageSubTop');
+  const btnClose = document.getElementById('btnCloseCustomerPortal');
+  const btnLookup = document.getElementById('btnLookupCustomer');
+  const phoneInput = document.getElementById('portalPhoneInput');
+
+  if (!modal) return;
+
+  function openPortal() {
+    modal.classList.add('open');
+    const savedPhone = localStorage.getItem('amrutha_customer_phone');
+    if (savedPhone && phoneInput) {
+      phoneInput.value = savedPhone;
+      loadCustomerPortalData(savedPhone);
+    }
+  }
+
+  function closePortal() {
+    modal.classList.remove('open');
+  }
+
+  if (btnOpenTop) btnOpenTop.addEventListener('click', openPortal);
+  if (btnManageTop) btnManageTop.addEventListener('click', openPortal);
+  if (btnClose) btnClose.addEventListener('click', closePortal);
+
+  // Close when clicking modal backdrop
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closePortal();
+  });
+
+  // Phone Lookup Button
+  if (btnLookup) {
+    btnLookup.addEventListener('click', () => {
+      const p = phoneInput ? phoneInput.value.replace(/\D/g, '') : '';
+      if (!p || p.length < 10) {
+        alert('Please enter a valid 10-digit mobile number.');
+        return;
+      }
+      localStorage.setItem('amrutha_customer_phone', p);
+      loadCustomerPortalData(p);
+    });
+  }
+
+  // Tab Switching inside portal
+  const tabs = document.querySelectorAll('.btn-portal-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetTab = tab.getAttribute('data-portal-tab');
+      const activeContent = document.getElementById('portalTabActiveSubs');
+      const pastContent = document.getElementById('portalTabPastSubs');
+      const ordersContent = document.getElementById('portalTabRecentOrders');
+
+      if (activeContent) activeContent.style.display = targetTab === 'active-subs' ? 'block' : 'none';
+      if (pastContent) pastContent.style.display = targetTab === 'past-subs' ? 'block' : 'none';
+      if (ordersContent) ordersContent.style.display = targetTab === 'recent-orders' ? 'block' : 'none';
+    });
+  });
+
+  window.openCustomerPortal = function (phone) {
+    modal.classList.add('open');
+    if (phone && phoneInput) {
+      phoneInput.value = phone;
+      loadCustomerPortalData(phone);
+    }
+  };
+}
+
+/**
+ * Loads subscriptions & orders for the specified customer phone
+ */
+async function loadCustomerPortalData(phone) {
+  const activeContainer = document.getElementById('activeSubsListContainer');
+  const pastContainer = document.getElementById('pastSubsListContainer');
+  const ordersContainer = document.getElementById('myOrdersListContainer');
+  const countActiveEl = document.getElementById('countActiveSubs');
+  const countPastEl = document.getElementById('countPastSubs');
+  const countOrdersEl = document.getElementById('countMyOrders');
+
+  if (activeContainer) activeContainer.innerHTML = '<div style="text-align: center; padding: 24px; color: #165b33;">⏳ Loading your subscription records...</div>';
+
+  let subscriptions = [];
+  let orders = [];
+
+  // 1. Fetch Subscriptions from API
+  try {
+    if (typeof AmruthaAPI !== 'undefined' && AmruthaAPI.getCustomerSubscriptions) {
+      const res = await AmruthaAPI.getCustomerSubscriptions(phone);
+      if (res && res.success && Array.isArray(res.data)) {
+        subscriptions = res.data;
+      }
+    }
+  } catch (err) {
+    console.warn('API subscription lookup failed, using local fallback:', err);
+  }
+
+  // Merge with local subscriptions
+  const localList = getLocalSubscriptions().filter(s => s.customerPhone === phone);
+  const existingIds = new Set(subscriptions.map(s => s.id));
+  localList.forEach(ls => {
+    if (!existingIds.has(ls.id)) subscriptions.push(ls);
+  });
+
+  // Seed sample data for preview if phone matches demo numbers
+  if (subscriptions.length === 0 && (phone === '9876543210' || phone === '6304495282' || phone === '9123456789')) {
+    subscriptions = [
+      {
+        id: 101,
+        subscriptionNumber: 'SUB-20261020-001',
+        customerName: 'Ramesh Sharma',
+        customerPhone: phone,
+        deliveryAddress: 'H.No 3-45, Venkatarampuram Road, Kodad town 508206',
+        milkType: 'Cow Milk',
+        dailyQuantity: '1 Litre',
+        dailyQuantityLitres: 1.0,
+        durationDays: 30,
+        startDate: '2026-10-21',
+        endDate: '2026-11-19',
+        deliverySlot: 'Morning Delivery (5:30 AM – 7:30 AM)',
+        dailyRate: 60.00,
+        totalAmount: 1800.00,
+        paymentStatus: 'PAID',
+        status: 'ACTIVE'
+      }
+    ];
+  }
+
+  // 2. Fetch Customer Orders from API
+  try {
+    if (typeof AmruthaAPI !== 'undefined' && AmruthaAPI.getCustomerOrders) {
+      const ordRes = await AmruthaAPI.getCustomerOrders(phone);
+      if (ordRes && ordRes.success && Array.isArray(ordRes.data)) {
+        orders = ordRes.data;
+      }
+    }
+  } catch (err) {
+    console.warn('Order lookup failed:', err);
+  }
+
+  // Partition into Active vs Past Subscriptions
+  const activeSubs = subscriptions.filter(s => s.status === 'ACTIVE' || s.status === 'PAUSED');
+  const pastSubs = subscriptions.filter(s => s.status === 'CANCELLED' || s.status === 'COMPLETED');
+
+  if (countActiveEl) countActiveEl.textContent = activeSubs.length;
+  if (countPastEl) countPastEl.textContent = pastSubs.length;
+  if (countOrdersEl) countOrdersEl.textContent = orders.length;
+
+  renderActiveSubscriptions(activeContainer, activeSubs);
+  renderPastSubscriptions(pastContainer, pastSubs);
+  renderCustomerOrders(ordersContainer, orders);
+}
+
+/**
+ * Renders Active Subscriptions with Pause, Resume, and Cancel buttons
+ */
+function renderActiveSubscriptions(container, subs) {
+  if (!container) return;
+
+  if (subs.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 40px 16px; color: #64748b;">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;">🥛</div>
+        <h4 style="color: #1e3a29; margin-bottom: 4px;">No Active Milk Subscriptions</h4>
+        <p style="font-size: 0.92rem; margin-bottom: 16px;">You don't have any daily deliveries scheduled right now.</p>
+        <button type="button" class="btn btn-milk btn-sm" onclick="document.getElementById('customerPortalModal').classList.remove('open'); document.getElementById('subscriptions').scrollIntoView({ behavior: 'smooth' });">
+          + Start a New Milk Subscription
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  subs.forEach(s => {
+    const isPaused = s.status === 'PAUSED';
+    const statusClass = isPaused ? 'status-paused' : 'status-active';
+    const statusLabel = isPaused ? '⏸️ PAUSED' : '✓ ACTIVE';
+
+    html += `
+      <div class="sub-portal-card" id="subCard-${s.id}">
+        <div class="sub-portal-card-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="sub-number-badge">${escapeSubHtml(s.subscriptionNumber)}</span>
+            <span class="sub-status-pill ${statusClass}">${statusLabel}</span>
+          </div>
+          <span style="font-weight: 800; color: #165b33; font-size: 1.15rem;">₹${Number(s.totalAmount).toFixed(2)}</span>
+        </div>
+
+        <div class="sub-portal-details-grid">
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Milk Variety &amp; Quantity</span>
+            <span class="sub-detail-val">${escapeSubHtml(s.milkType)} &bull; ${escapeSubHtml(s.dailyQuantity)}/day</span>
+          </div>
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Duration Plan</span>
+            <span class="sub-detail-val">${s.durationDays} Days (${escapeSubHtml(s.startDate)} to ${escapeSubHtml(s.endDate)})</span>
+          </div>
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Preferred Time Slot</span>
+            <span class="sub-detail-val">${escapeSubHtml(s.deliverySlot)}</span>
+          </div>
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Delivery Address</span>
+            <span class="sub-detail-val">${escapeSubHtml(s.deliveryAddress)}</span>
+          </div>
+        </div>
+
+        <div class="sub-portal-actions">
+          ${isPaused ? `
+            <button type="button" class="btn-sub-resume" onclick="handleResumeSubscription(${s.id})">
+              ▶️ Resume Deliveries
+            </button>
+          ` : `
+            <button type="button" class="btn-sub-pause" onclick="handlePauseSubscription(${s.id})">
+              ⏸️ Pause Deliveries
+            </button>
+          `}
+          <button type="button" class="btn-sub-cancel" onclick="handleCancelSubscription(${s.id})">
+            ✕ Cancel Subscription
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+/**
+ * Renders Past (Completed / Cancelled) Subscriptions
+ */
+function renderPastSubscriptions(container, subs) {
+  if (!container) return;
+
+  if (subs.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 36px 16px; color: #64748b;">
+        No completed or cancelled subscriptions found.
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  subs.forEach(s => {
+    const isCancelled = s.status === 'CANCELLED';
+    const statusClass = isCancelled ? 'status-cancelled' : 'status-completed';
+    const statusLabel = isCancelled ? '✕ CANCELLED' : '✓ COMPLETED';
+
+    html += `
+      <div class="sub-portal-card" style="opacity: 0.85;">
+        <div class="sub-portal-card-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="sub-number-badge">${escapeSubHtml(s.subscriptionNumber)}</span>
+            <span class="sub-status-pill ${statusClass}">${statusLabel}</span>
+          </div>
+          <span style="font-weight: 700; color: #64748b;">₹${Number(s.totalAmount).toFixed(2)}</span>
+        </div>
+
+        <div class="sub-portal-details-grid">
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Milk Variety &amp; Qty</span>
+            <span class="sub-detail-val">${escapeSubHtml(s.milkType)} &bull; ${escapeSubHtml(s.dailyQuantity)}/day</span>
+          </div>
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Schedule</span>
+            <span class="sub-detail-val">${escapeSubHtml(s.startDate)} to ${escapeSubHtml(s.endDate)}</span>
+          </div>
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Delivery Shift</span>
+            <span class="sub-detail-val">${escapeSubHtml(s.deliverySlot)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+/**
+ * Renders Past Customer Store Orders
+ */
+function renderCustomerOrders(container, orders) {
+  if (!container) return;
+
+  if (orders.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 36px 16px; color: #64748b;">
+        No store orders recorded for this mobile number yet.
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  orders.forEach(o => {
+    const itemsText = (o.items || []).map(i => `${escapeSubHtml(i.productName)} (${i.quantity})`).join(', ');
+
+    html += `
+      <div class="sub-portal-card">
+        <div class="sub-portal-card-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="sub-number-badge">${escapeSubHtml(o.orderNumber)}</span>
+            <span class="sub-status-pill status-active">${escapeSubHtml(o.status)}</span>
+          </div>
+          <span style="font-weight: 800; color: #165b33; font-size: 1.15rem;">₹${Number(o.totalAmount).toFixed(2)}</span>
+        </div>
+
+        <div class="sub-portal-details-grid">
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Items</span>
+            <span class="sub-detail-val">${itemsText || 'General Order'}</span>
+          </div>
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Delivery Slot</span>
+            <span class="sub-detail-val">${escapeSubHtml(o.deliverySlot || 'Standard')}</span>
+          </div>
+          <div class="sub-detail-item">
+            <span class="sub-detail-label">Delivery Address</span>
+            <span class="sub-detail-val">${escapeSubHtml(o.deliveryAddress)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+/**
+ * Customer Action: Pause Subscription
+ */
+window.handlePauseSubscription = async function (id) {
+  if (!confirm('Are you sure you want to pause your daily milk deliveries? You can resume deliveries anytime.')) {
+    return;
+  }
+
+  try {
+    if (typeof AmruthaAPI !== 'undefined' && AmruthaAPI.pauseSubscription) {
+      await AmruthaAPI.pauseSubscription(id);
+    }
+  } catch (err) {
+    console.warn('API pause call failed; updating locally:', err);
+  }
+
+  // Update locally
+  const list = getLocalSubscriptions();
+  const sub = list.find(s => s.id === id);
+  if (sub) {
+    sub.status = 'PAUSED';
+    sub.pausedDate = new Date().toISOString().split('T')[0];
+    localStorage.setItem('amrutha_local_subscriptions', JSON.stringify(list));
+  }
+
+  const phone = localStorage.getItem('amrutha_customer_phone');
+  if (phone) loadCustomerPortalData(phone);
+  alert('⏸️ Your subscription deliveries have been paused. You can resume anytime.');
+};
+
+/**
+ * Customer Action: Resume Subscription
+ */
+window.handleResumeSubscription = async function (id) {
+  try {
+    if (typeof AmruthaAPI !== 'undefined' && AmruthaAPI.resumeSubscription) {
+      await AmruthaAPI.resumeSubscription(id);
+    }
+  } catch (err) {
+    console.warn('API resume call failed; updating locally:', err);
+  }
+
+  // Update locally
+  const list = getLocalSubscriptions();
+  const sub = list.find(s => s.id === id);
+  if (sub) {
+    sub.status = 'ACTIVE';
+    sub.pausedDate = null;
+    localStorage.setItem('amrutha_local_subscriptions', JSON.stringify(list));
+  }
+
+  const phone = localStorage.getItem('amrutha_customer_phone');
+  if (phone) loadCustomerPortalData(phone);
+  alert('▶️ Deliveries resumed! Your daily fresh milk will arrive in your scheduled slot.');
+};
+
+/**
+ * Customer Action: Cancel Subscription
+ */
+window.handleCancelSubscription = async function (id) {
+  if (!confirm('Are you sure you want to cancel this subscription?')) {
+    return;
+  }
+
+  try {
+    if (typeof AmruthaAPI !== 'undefined' && AmruthaAPI.cancelSubscription) {
+      await AmruthaAPI.cancelSubscription(id);
+    }
+  } catch (err) {
+    console.warn('API cancel call failed; updating locally:', err);
+  }
+
+  // Update locally
+  const list = getLocalSubscriptions();
+  const sub = list.find(s => s.id === id);
+  if (sub) {
+    sub.status = 'CANCELLED';
+    localStorage.setItem('amrutha_local_subscriptions', JSON.stringify(list));
+  }
+
+  const phone = localStorage.getItem('amrutha_customer_phone');
+  if (phone) loadCustomerPortalData(phone);
+  alert('✕ Your subscription has been cancelled.');
+};
+
+function escapeSubHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }

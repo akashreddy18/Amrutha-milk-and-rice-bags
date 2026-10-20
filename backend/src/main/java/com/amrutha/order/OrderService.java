@@ -189,6 +189,16 @@ public class OrderService {
     }
 
     /**
+     * Retrieves all orders for a customer by phone number.
+     */
+    @Transactional(readOnly = true)
+    public List<OrderResponseDto> getOrdersByCustomerPhone(String customerPhone) {
+        return orderRepository.findByCustomerPhoneOrderByCreatedAtDesc(customerPhone).stream()
+                .map(OrderResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Updates order status across lifecycle (PENDING, CONFIRMED, PACKED, OUT_FOR_DELIVERY, DELIVERED, CANCELLED).
      * If an order is CANCELLED, previously deducted stock is safely restored to inventory.
      */

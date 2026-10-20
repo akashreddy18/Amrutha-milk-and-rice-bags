@@ -319,6 +319,7 @@
     if (tabId === 'tab-overview') loadCombinedOverview();
     else if (tabId === 'tab-dairy') loadDairyDashboard();
     else if (tabId === 'tab-rice') loadRiceDashboard();
+    else if (tabId === 'tab-subscriptions') loadSubscriptionsDashboard();
     else if (tabId === 'tab-orders') loadOrders();
     else if (tabId === 'tab-products') loadCatalogProducts();
     else if (tabId === 'tab-finance') loadFinancialReport();
@@ -1610,4 +1611,513 @@
       .replace(/'/g, '&#039;');
   }
 
+  // =========================================================================
+  // 8. MILK SUBSCRIPTION & DAILY DELIVERY DEMAND MANAGEMENT
+  // =========================================================================
+
+  let adminSubscriptionsMaster = [];
+  let currentAdminSubFilter = 'ALL';
+  let currentAdminSubSearch = '';
+
+  const defaultAdminSeedSubs = [
+    {
+      id: 1,
+      subscriptionNumber: 'SUB-20261020-001',
+      customerName: 'Ramesh Sharma',
+      customerPhone: '9876543210',
+      deliveryAddress: 'H.No 3-45, Venkatarampuram Road, Kodad town 508206',
+      milkType: 'Cow Milk',
+      dailyQuantity: '1 Litre',
+      dailyQuantityLitres: 1.0,
+      durationDays: 30,
+      startDate: '2026-10-21',
+      endDate: '2026-11-19',
+      deliverySlot: 'Morning Delivery (5:30 AM – 7:30 AM)',
+      dailyRate: 60.00,
+      totalAmount: 1800.00,
+      paymentStatus: 'PAID',
+      status: 'ACTIVE',
+      createdAt: '2026-10-20T08:00:00'
+    },
+    {
+      id: 2,
+      subscriptionNumber: 'SUB-20261020-002',
+      customerName: 'Priya Patel',
+      customerPhone: '9876543211',
+      deliveryAddress: 'Flat 204, Sri Sai Enclave, Kodad town 508206',
+      milkType: 'Buffalo Milk',
+      dailyQuantity: '1 Litre',
+      dailyQuantityLitres: 1.0,
+      durationDays: 30,
+      startDate: '2026-10-21',
+      endDate: '2026-11-19',
+      deliverySlot: 'Morning Delivery (5:30 AM – 7:30 AM)',
+      dailyRate: 75.00,
+      totalAmount: 2250.00,
+      paymentStatus: 'PAID',
+      status: 'ACTIVE',
+      createdAt: '2026-10-20T08:15:00'
+    },
+    {
+      id: 3,
+      subscriptionNumber: 'SUB-20261020-003',
+      customerName: 'Suresh Kumar',
+      customerPhone: '9876543212',
+      deliveryAddress: 'Near Bus Stand, Mellacheruvu Road, Kodad',
+      milkType: 'Buffalo Milk',
+      dailyQuantity: '2 Litres',
+      dailyQuantityLitres: 2.0,
+      durationDays: 7,
+      startDate: '2026-10-21',
+      endDate: '2026-10-27',
+      deliverySlot: 'Evening Delivery (5:00 PM – 7:00 PM)',
+      dailyRate: 150.00,
+      totalAmount: 1050.00,
+      paymentStatus: 'PENDING',
+      status: 'ACTIVE',
+      createdAt: '2026-10-20T09:00:00'
+    },
+    {
+      id: 4,
+      subscriptionNumber: 'SUB-20261020-004',
+      customerName: 'Ananya Rao',
+      customerPhone: '9876543213',
+      deliveryAddress: 'H.No 1-12, Temple Street, Kodad town 508206',
+      milkType: 'Cow Milk',
+      dailyQuantity: '500 ml',
+      dailyQuantityLitres: 0.5,
+      durationDays: 30,
+      startDate: '2026-10-15',
+      endDate: '2026-11-13',
+      deliverySlot: 'Morning Delivery (5:30 AM – 7:30 AM)',
+      dailyRate: 30.00,
+      totalAmount: 900.00,
+      paymentStatus: 'PAID',
+      status: 'PAUSED',
+      createdAt: '2026-10-14T10:00:00'
+    }
+  ];
+
+  /**
+   * Loads the Subscriptions Dashboard (Demand + Subscriptions list)
+   */
+  window.loadSubscriptionsDashboard = async function () {
+    const datePicker = document.getElementById('demandDatePicker');
+    if (datePicker && !datePicker.value) {
+      // Default to tomorrow or today
+      const todayStr = new Date().toISOString().split('T')[0];
+      datePicker.value = todayStr;
+    }
+
+    await loadSubscriptionsList();
+    loadDemandForSelectedDate();
+  };
+
+  /**
+   * Loads and calculates Daily Delivery Demand for the selected date
+   */
+  window.loadDemandForSelectedDate = async function () {
+    const datePicker = document.getElementById('demandDatePicker');
+    const selectedDate = datePicker ? datePicker.value : new Date().toISOString().split('T')[0];
+
+    let demand = null;
+
+    // Try fetching from backend API
+    try {
+      const res = await authFetch(`${API_BASE}/admin/subscriptions/daily-demand?date=${selectedDate}`);
+      const json = await res.json();
+      if (json && json.success && json.data) {
+        demand = json.data;
+      }
+    } catch (e) {
+      console.warn('API daily demand unavailable, computing locally:', e);
+    }
+
+    // Fallback: Compute demand directly from adminSubscriptionsMaster
+    if (!demand) {
+      let morningCow = 0;
+      let morningBuffalo = 0;
+      let eveningCow = 0;
+      let eveningBuffalo = 0;
+      let activeCount = 0;
+
+      adminSubscriptionsMaster.forEach(s => {
+        if (s.status === 'ACTIVE' && s.startDate && s.endDate) {
+          if (s.startDate <= selectedDate && selectedDate <= s.endDate) {
+            activeCount++;
+            const litres = Number(s.dailyQuantityLitres) || (s.dailyQuantity && s.dailyQuantity.includes('500') ? 0.5 : (s.dailyQuantity && s.dailyQuantity.includes('2') ? 2.0 : 1.0));
+            const isCow = (s.milkType || '').toLowerCase().includes('cow');
+            const isMorning = (s.deliverySlot || '').toLowerCase().includes('morning');
+
+            if (isMorning) {
+              if (isCow) morningCow += litres;
+              else morningBuffalo += litres;
+            } else {
+              if (isCow) eveningCow += litres;
+              else eveningBuffalo += litres;
+            }
+          }
+        }
+      });
+
+      const morningTotal = morningCow + morningBuffalo;
+      const eveningTotal = eveningCow + eveningBuffalo;
+      const totalRequired = morningTotal + eveningTotal;
+
+      demand = {
+        date: selectedDate,
+        totalRequiredLitres: totalRequired,
+        morningCowMilkLitres: morningCow,
+        morningBuffaloMilkLitres: morningBuffalo,
+        morningTotalLitres: morningTotal,
+        eveningCowMilkLitres: eveningCow,
+        eveningBuffaloMilkLitres: eveningBuffalo,
+        eveningTotalLitres: eveningTotal,
+        activeSubscribersCount: activeCount
+      };
+    }
+
+    // Render Demand to UI
+    const totalEl = document.getElementById('adminTotalDemandLitres');
+    const morningEl = document.getElementById('adminMorningDemandLitres');
+    const eveningEl = document.getElementById('adminEveningDemandLitres');
+    const activeEl = document.getElementById('adminActiveSubscribersCount');
+
+    const mCowEl = document.getElementById('adminMorningCowLitres');
+    const mBufEl = document.getElementById('adminMorningBuffaloLitres');
+    const mTotEl = document.getElementById('adminMorningTotalLitres');
+
+    const eCowEl = document.getElementById('adminEveningCowLitres');
+    const eBufEl = document.getElementById('adminEveningBuffaloLitres');
+    const eTotEl = document.getElementById('adminEveningTotalLitres');
+
+    if (totalEl) totalEl.textContent = `${Number(demand.totalRequiredLitres).toFixed(1)} L`;
+    if (morningEl) morningEl.textContent = `${Number(demand.morningTotalLitres).toFixed(1)} L`;
+    if (eveningEl) eveningEl.textContent = `${Number(demand.eveningTotalLitres).toFixed(1)} L`;
+    if (activeEl) activeEl.textContent = `${demand.activeSubscribersCount || 0}`;
+
+    if (mCowEl) mCowEl.textContent = `${Number(demand.morningCowMilkLitres).toFixed(1)} L`;
+    if (mBufEl) mBufEl.textContent = `${Number(demand.morningBuffaloMilkLitres).toFixed(1)} L`;
+    if (mTotEl) mTotEl.textContent = `${Number(demand.morningTotalLitres).toFixed(1)} L`;
+
+    if (eCowEl) eCowEl.textContent = `${Number(demand.eveningCowMilkLitres).toFixed(1)} L`;
+    if (eBufEl) eBufEl.textContent = `${Number(demand.eveningBuffaloMilkLitres).toFixed(1)} L`;
+    if (eTotEl) eTotEl.textContent = `${Number(demand.eveningTotalLitres).toFixed(1)} L`;
+  };
+
+  /**
+   * Loads all subscriptions and calculates revenue
+   */
+  async function loadSubscriptionsList() {
+    const tableBody = document.getElementById('subscriptionsTableBody');
+    if (!tableBody) return;
+
+    let subscriptions = [];
+
+    // 1. Try fetching from backend API
+    try {
+      const res = await authFetch(`${API_BASE}/admin/subscriptions`);
+      const json = await res.json();
+      if (json && json.success && Array.isArray(json.data)) {
+        subscriptions = json.data;
+      }
+    } catch (e) {
+      console.warn('Backend subscriptions API unavailable, using local and seed data:', e);
+    }
+
+    // 2. Merge local storage subscriptions
+    try {
+      const localRaw = localStorage.getItem('amrutha_local_subscriptions');
+      if (localRaw) {
+        const localList = JSON.parse(localRaw);
+        const existingIds = new Set(subscriptions.map(s => s.id));
+        localList.forEach(ls => {
+          if (!existingIds.has(ls.id)) subscriptions.push(ls);
+        });
+      }
+    } catch (e) {
+      console.error('Failed to read local subscriptions', e);
+    }
+
+    // 3. Fallback to seed data if empty
+    if (subscriptions.length === 0) {
+      subscriptions = [...defaultAdminSeedSubs];
+    }
+
+    adminSubscriptionsMaster = subscriptions;
+
+    // Update tab badge
+    const badge = document.getElementById('tabSubCountBadge');
+    if (badge) badge.textContent = subscriptions.length;
+
+    // Calculate subscription revenue strictly from recorded payments
+    calculateSubscriptionRevenue(subscriptions);
+
+    // Update filter counts and render table
+    updateAdminSubFilterCounts();
+    renderAdminSubscriptionsTable();
+  }
+
+  /**
+   * Calculates subscription revenue from actual recorded payments and orders
+   */
+  function calculateSubscriptionRevenue(subs) {
+    let grossTotal = 0;
+    let paidTotal = 0;
+    let pendingTotal = 0;
+
+    subs.forEach(s => {
+      const amt = Number(s.totalAmount) || 0;
+      grossTotal += amt;
+
+      if (s.paymentStatus === 'PAID') {
+        paidTotal += amt;
+      } else {
+        pendingTotal += amt;
+      }
+    });
+
+    const grossEl = document.getElementById('adminSubGrossRevenue');
+    const paidEl = document.getElementById('adminSubPaidRevenue');
+    const pendingEl = document.getElementById('adminSubPendingRevenue');
+
+    if (grossEl) grossEl.textContent = formatCurrency(grossTotal);
+    if (paidEl) paidEl.textContent = formatCurrency(paidTotal);
+    if (pendingEl) pendingEl.textContent = formatCurrency(pendingTotal);
+  }
+
+  /**
+   * Updates filter button count numbers
+   */
+  function updateAdminSubFilterCounts() {
+    const allCount = adminSubscriptionsMaster.length;
+    const activeCount = adminSubscriptionsMaster.filter(s => s.status === 'ACTIVE').length;
+    const pausedCount = adminSubscriptionsMaster.filter(s => s.status === 'PAUSED').length;
+    const cancelledCount = adminSubscriptionsMaster.filter(s => s.status === 'CANCELLED').length;
+    const completedCount = adminSubscriptionsMaster.filter(s => s.status === 'COMPLETED').length;
+
+    const elAll = document.getElementById('countSubAll');
+    const elAct = document.getElementById('countSubActive');
+    const elPau = document.getElementById('countSubPaused');
+    const elCan = document.getElementById('countSubCancelled');
+    const elCom = document.getElementById('countSubCompleted');
+
+    if (elAll) elAll.textContent = allCount;
+    if (elAct) elAct.textContent = activeCount;
+    if (elPau) elPau.textContent = pausedCount;
+    if (elCan) elCan.textContent = cancelledCount;
+    if (elCom) elCom.textContent = completedCount;
+  }
+
+  /**
+   * Filter subscriptions by status button
+   */
+  window.filterAdminSubscriptions = function (filter) {
+    currentAdminSubFilter = filter;
+    const buttons = document.querySelectorAll('#adminSubStatusFilters .btn-sub-filter');
+    buttons.forEach(b => {
+      if (b.getAttribute('data-sub-filter') === filter) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+    renderAdminSubscriptionsTable();
+  };
+
+  /**
+   * Search filter for subscriptions table
+   */
+  window.handleAdminSubSearch = function () {
+    const input = document.getElementById('adminSubSearchInput');
+    currentAdminSubSearch = input ? input.value.trim().toLowerCase() : '';
+    renderAdminSubscriptionsTable();
+  };
+
+  /**
+   * Renders the subscriptions table rows
+   */
+  function renderAdminSubscriptionsTable() {
+    const tbody = document.getElementById('subscriptionsTableBody');
+    if (!tbody) return;
+
+    let filtered = adminSubscriptionsMaster;
+
+    // Apply status filter
+    if (currentAdminSubFilter !== 'ALL') {
+      filtered = filtered.filter(s => s.status === currentAdminSubFilter);
+    }
+
+    // Apply search filter
+    if (currentAdminSubSearch) {
+      filtered = filtered.filter(s => {
+        const text = `${s.subscriptionNumber || ''} ${s.customerName || ''} ${s.customerPhone || ''} ${s.deliveryAddress || ''} ${s.milkType || ''}`.toLowerCase();
+        return text.includes(currentAdminSubSearch);
+      });
+    }
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center py-4">No subscriptions matching filter.</td></tr>`;
+      return;
+    }
+
+    let html = '';
+    filtered.forEach(s => {
+      const isPaid = s.paymentStatus === 'PAID';
+      const paymentBadgeClass = isPaid ? 'badge-success' : 'badge-warning';
+      const statusPillClass = s.status === 'ACTIVE' ? 'status-active' : (s.status === 'PAUSED' ? 'status-paused' : (s.status === 'CANCELLED' ? 'status-cancelled' : 'status-completed'));
+
+      html += `
+        <tr>
+          <td>
+            <strong>${escapeHtml(s.subscriptionNumber)}</strong>
+            <br><small class="text-muted">${formatDate(s.createdAt)}</small>
+          </td>
+          <td>
+            <strong>${escapeHtml(s.customerName)}</strong>
+          </td>
+          <td>
+            <a href="tel:${escapeHtml(s.customerPhone)}" style="color: #165b33; font-weight: 700;">${escapeHtml(s.customerPhone)}</a>
+            <br><small class="text-muted" style="max-width: 200px; display: inline-block;">${escapeHtml(s.deliveryAddress)}</small>
+          </td>
+          <td>
+            <span class="bu-badge bu-dairy">${escapeHtml(s.milkType)}</span>
+            <br><strong>${escapeHtml(s.dailyQuantity)}/day</strong>
+          </td>
+          <td>
+            <strong>${s.durationDays} Days Plan</strong>
+            <br><small class="text-muted">${escapeHtml(s.startDate)} → ${escapeHtml(s.endDate)}</small>
+          </td>
+          <td>
+            <small style="font-weight: 600;">${escapeHtml(s.deliverySlot)}</small>
+          </td>
+          <td>
+            <strong style="color: #165b33; font-size: 1.05rem;">${formatCurrency(s.totalAmount)}</strong>
+            <br><small class="text-muted">₹${Number(s.dailyRate).toFixed(2)}/day</small>
+          </td>
+          <td>
+            <span class="status-badge ${paymentBadgeClass}" style="cursor: pointer;" onclick="adminToggleSubPayment(${s.id}, '${s.paymentStatus}')" title="Click to toggle Payment Status">
+              ${isPaid ? '✓ PAID' : '⏳ PENDING'}
+            </span>
+          </td>
+          <td>
+            <span class="sub-status-pill ${statusPillClass}">${escapeHtml(s.status)}</span>
+          </td>
+          <td>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              ${s.status === 'ACTIVE' ? `
+                <button type="button" class="btn btn-outline btn-sm" onclick="adminUpdateSubStatus(${s.id}, 'PAUSED')" title="Pause delivery">
+                  ⏸️ Pause
+                </button>
+              ` : ''}
+
+              ${s.status === 'PAUSED' ? `
+                <button type="button" class="btn btn-outline btn-sm" style="color: #166534; border-color: #86efac;" onclick="adminUpdateSubStatus(${s.id}, 'ACTIVE')" title="Resume delivery">
+                  ▶️ Resume
+                </button>
+              ` : ''}
+
+              ${(s.status === 'ACTIVE' || s.status === 'PAUSED') ? `
+                <button type="button" class="btn btn-outline btn-sm" style="color: #991b1b; border-color: #fecaca;" onclick="adminUpdateSubStatus(${s.id}, 'CANCELLED')" title="Cancel subscription">
+                  ✕ Cancel
+                </button>
+              ` : ''}
+
+              ${s.status === 'CANCELLED' ? `
+                <button type="button" class="btn btn-outline btn-sm" style="color: #166534; border-color: #86efac;" onclick="adminUpdateSubStatus(${s.id}, 'ACTIVE')" title="Reactivate subscription">
+                  🔄 Reactivate
+                </button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  /**
+   * Updates subscription status from Admin Dashboard
+   */
+  window.adminUpdateSubStatus = async function (id, newStatus) {
+    if (!confirm(`Are you sure you want to change subscription #${id} status to ${newStatus}?`)) {
+      return;
+    }
+
+    try {
+      await authFetch(`${API_BASE}/admin/subscriptions/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus, notes: 'Admin updated from Command Center' })
+      });
+      showToast(`Subscription status updated to ${newStatus}`, 'success');
+    } catch (e) {
+      console.warn('API call failed; updating locally:', e);
+      showToast(`Subscription status updated to ${newStatus} (Local Session)`, 'info');
+    }
+
+    // Update in local memory
+    const sub = adminSubscriptionsMaster.find(s => s.id === id);
+    if (sub) {
+      sub.status = newStatus;
+      if (newStatus === 'PAUSED') sub.pausedDate = new Date().toISOString().split('T')[0];
+      else if (newStatus === 'ACTIVE') sub.pausedDate = null;
+    }
+
+    // Update localStorage
+    try {
+      const localRaw = localStorage.getItem('amrutha_local_subscriptions');
+      if (localRaw) {
+        const localList = JSON.parse(localRaw);
+        const lsub = localList.find(s => s.id === id);
+        if (lsub) {
+          lsub.status = newStatus;
+          localStorage.setItem('amrutha_local_subscriptions', JSON.stringify(localList));
+        }
+      }
+    } catch (e) {}
+
+    updateAdminSubFilterCounts();
+    renderAdminSubscriptionsTable();
+    loadDemandForSelectedDate();
+  };
+
+  /**
+   * Toggles payment status between PAID and PENDING
+   */
+  window.adminToggleSubPayment = async function (id, currentStatus) {
+    const newStatus = currentStatus === 'PAID' ? 'PENDING' : 'PAID';
+
+    try {
+      await authFetch(`${API_BASE}/admin/subscriptions/${id}/payment?paymentStatus=${newStatus}`, {
+        method: 'PATCH'
+      });
+      showToast(`Payment status updated to ${newStatus}`, 'success');
+    } catch (e) {
+      console.warn('API call failed; updating locally:', e);
+      showToast(`Payment status updated to ${newStatus} (Local Session)`, 'info');
+    }
+
+    // Update in local memory
+    const sub = adminSubscriptionsMaster.find(s => s.id === id);
+    if (sub) {
+      sub.paymentStatus = newStatus;
+    }
+
+    // Update localStorage
+    try {
+      const localRaw = localStorage.getItem('amrutha_local_subscriptions');
+      if (localRaw) {
+        const localList = JSON.parse(localRaw);
+        const lsub = localList.find(s => s.id === id);
+        if (lsub) {
+          lsub.paymentStatus = newStatus;
+          localStorage.setItem('amrutha_local_subscriptions', JSON.stringify(localList));
+        }
+      }
+    } catch (e) {}
+
+    calculateSubscriptionRevenue(adminSubscriptionsMaster);
+    renderAdminSubscriptionsTable();
+  };
+
 })();
+

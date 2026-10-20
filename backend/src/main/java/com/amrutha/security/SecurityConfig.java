@@ -74,6 +74,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/orders/number/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/orders/customer/**").permitAll()
+                        .requestMatchers("/api/subscriptions/**").permitAll()
 
                         // 3. Admin Secured Endpoints (Strictly requires administrative roles)
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "OWNER", "DAIRY_ADMIN", "RICE_ADMIN")

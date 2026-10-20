@@ -445,6 +445,9 @@
         <button type="button" class="admin-tab" data-tab="tab-rice">
           <span class="tab-icon">🌾</span> Rice Division
         </button>
+        <button type="button" class="admin-tab" data-tab="tab-subscriptions">
+          <span class="tab-icon">📅</span> Milk Subscriptions <span class="tab-count-badge" id="tabSubCountBadge">0</span>
+        </button>
         <button type="button" class="admin-tab" data-tab="tab-orders">
           <span class="tab-icon">📦</span> Order Management <span class="tab-count-badge" id="tabOrdersBadge">0</span>
         </button>
@@ -664,6 +667,170 @@
             </table>
           </div>
         </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB: MILK SUBSCRIPTIONS & DAILY DELIVERY DEMAND -->
+      <!-- =================================================================== -->
+      <div class="admin-tab-content" id="tab-subscriptions">
+        <div class="tab-header">
+          <div>
+            <h2>Daily Milk Subscriptions &amp; Demand Forecasting</h2>
+            <p>Live schedule, doorstep delivery volume requirements, household fulfillment, and subscription revenue reconciliation.</p>
+          </div>
+          <div class="header-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <label for="demandDatePicker" style="font-weight: 700; font-size: 0.88rem; color: #165b33;">Delivery Date:</label>
+              <input type="date" id="demandDatePicker" class="form-control form-control-sm" style="width: auto; height: 38px !important;" onchange="loadDemandForSelectedDate()">
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="loadSubscriptionsDashboard()">
+              🔄 Refresh Data
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. DAILY DEMAND FORECASTING METRIC CARDS -->
+        <div class="admin-demand-grid">
+          <div class="demand-metric-card highlight">
+            <div class="demand-metric-label">Total Daily Milk Required</div>
+            <div class="demand-metric-val" id="adminTotalDemandLitres">0.0 L</div>
+            <div class="demand-metric-sub">Combined farm procurement demand</div>
+          </div>
+          <div class="demand-metric-card">
+            <div class="demand-metric-label">🌅 Morning Shift Demand</div>
+            <div class="demand-metric-val" id="adminMorningDemandLitres">0.0 L</div>
+            <div class="demand-metric-sub">5:30 AM – 7:30 AM delivery</div>
+          </div>
+          <div class="demand-metric-card">
+            <div class="demand-metric-label">🌇 Evening Shift Demand</div>
+            <div class="demand-metric-val" id="adminEveningDemandLitres">0.0 L</div>
+            <div class="demand-metric-sub">5:00 PM – 7:00 PM delivery</div>
+          </div>
+          <div class="demand-metric-card">
+            <div class="demand-metric-label">Active Subscribers</div>
+            <div class="demand-metric-val" id="adminActiveSubscribersCount">0</div>
+            <div class="demand-metric-sub">Households on active plans</div>
+          </div>
+        </div>
+
+        <!-- 2. SHIFT BREAKDOWN CARDS (COW vs BUFFALO DEMAND) -->
+        <div class="demand-shifts-container">
+          <!-- Morning Shift -->
+          <div class="demand-shift-card">
+            <div class="demand-shift-header">
+              <h4>🌅 Morning Delivery Shift (5:30 – 7:30 AM)</h4>
+              <span class="badge-tag">Tea &amp; Breakfast</span>
+            </div>
+            <div class="demand-shift-rows">
+              <div class="demand-shift-row">
+                <span>Pure Cow Milk Required:</span>
+                <strong id="adminMorningCowLitres">0.0 L</strong>
+              </div>
+              <div class="demand-shift-row">
+                <span>Pure Buffalo Milk Required:</span>
+                <strong id="adminMorningBuffaloLitres">0.0 L</strong>
+              </div>
+              <hr style="border: 0; border-top: 1.5px dashed #cbd5e1; margin: 4px 0;">
+              <div class="demand-shift-row" style="font-weight: 800;">
+                <span>Total Morning Shift Volume:</span>
+                <strong style="color: #165b33; font-size: 1.25rem;" id="adminMorningTotalLitres">0.0 L</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evening Shift -->
+          <div class="demand-shift-card">
+            <div class="demand-shift-header">
+              <h4>🌇 Evening Delivery Shift (5:00 – 7:00 PM)</h4>
+              <span class="badge-tag">Dinner &amp; Curd</span>
+            </div>
+            <div class="demand-shift-rows">
+              <div class="demand-shift-row">
+                <span>Pure Cow Milk Required:</span>
+                <strong id="adminEveningCowLitres">0.0 L</strong>
+              </div>
+              <div class="demand-shift-row">
+                <span>Pure Buffalo Milk Required:</span>
+                <strong id="adminEveningBuffaloLitres">0.0 L</strong>
+              </div>
+              <hr style="border: 0; border-top: 1.5px dashed #cbd5e1; margin: 4px 0;">
+              <div class="demand-shift-row" style="font-weight: 800;">
+                <span>Total Evening Shift Volume:</span>
+                <strong style="color: #165b33; font-size: 1.25rem;" id="adminEveningTotalLitres">0.0 L</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. SUBSCRIPTION REVENUE TRACKING (DAIRY SEGREGATED) -->
+        <div class="dashboard-panel" style="margin-bottom: 24px;">
+          <div class="panel-header">
+            <h3>Subscription Revenue &amp; Financial Tracking (Dairy)</h3>
+            <span class="text-muted">Calculated strictly from recorded customer payments</span>
+          </div>
+          <div class="kpi-grid" style="margin-bottom: 0;">
+            <div class="kpi-card kpi-gold">
+              <span class="kpi-label">Total Gross Subscriptions Value</span>
+              <span class="kpi-value" id="adminSubGrossRevenue">₹0.00</span>
+              <span class="kpi-subtitle">All active, completed &amp; recorded plans</span>
+            </div>
+            <div class="kpi-card kpi-green">
+              <span class="kpi-label">Recorded Payments (Collected)</span>
+              <span class="kpi-value" id="adminSubPaidRevenue">₹0.00</span>
+              <span class="kpi-subtitle">Doorstep UPI / Cash collected &amp; verified</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Pending Collections</span>
+              <span class="kpi-value" id="adminSubPendingRevenue">₹0.00</span>
+              <span class="kpi-subtitle">Receivables upon delivery cycle</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. SUBSCRIPTIONS MANAGEMENT TABLE -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3>Customer Delivery Schedules &amp; Management</h3>
+            <span class="text-muted">Direct subscriber controls</span>
+          </div>
+
+          <!-- Filter & Search Controls -->
+          <div class="sub-filter-bar">
+            <div class="sub-filter-pills" id="adminSubStatusFilters">
+              <button type="button" class="btn-sub-filter active" data-sub-filter="ALL" onclick="filterAdminSubscriptions('ALL')">All (<span id="countSubAll">0</span>)</button>
+              <button type="button" class="btn-sub-filter" data-sub-filter="ACTIVE" onclick="filterAdminSubscriptions('ACTIVE')">Active (<span id="countSubActive">0</span>)</button>
+              <button type="button" class="btn-sub-filter" data-sub-filter="PAUSED" onclick="filterAdminSubscriptions('PAUSED')">Paused (<span id="countSubPaused">0</span>)</button>
+              <button type="button" class="btn-sub-filter" data-sub-filter="CANCELLED" onclick="filterAdminSubscriptions('CANCELLED')">Cancelled (<span id="countSubCancelled">0</span>)</button>
+              <button type="button" class="btn-sub-filter" data-sub-filter="COMPLETED" onclick="filterAdminSubscriptions('COMPLETED')">Completed (<span id="countSubCompleted">0</span>)</button>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="adminSubSearchInput" class="form-control form-control-sm" placeholder="Search by name, phone, sub #..." style="max-width: 260px; height: 38px !important;" oninput="handleAdminSubSearch()">
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Sub # &amp; Date</th>
+                  <th>Customer</th>
+                  <th>Phone &amp; Address</th>
+                  <th>Milk Variety &amp; Qty</th>
+                  <th>Plan &amp; Schedule</th>
+                  <th>Time Slot</th>
+                  <th>Total Amount</th>
+                  <th>Payment Status</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="subscriptionsTableBody">
+                <tr><td colspan="10" class="text-center py-4">Loading milk subscriptions...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
       <!-- TAB 4: ORDER MANAGEMENT -->

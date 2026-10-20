@@ -17,6 +17,9 @@ import com.amrutha.order.OrderStatus;
 import com.amrutha.orderitem.OrderItem;
 import com.amrutha.purchase.Purchase;
 import com.amrutha.purchase.PurchaseRepository;
+import com.amrutha.subscription.Subscription;
+import com.amrutha.subscription.SubscriptionRepository;
+import com.amrutha.subscription.SubscriptionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -59,6 +62,7 @@ public class AmruthaApplication {
                                           OrderRepository orderRepository,
                                           PurchaseRepository purchaseRepository,
                                           ExpenseRepository expenseRepository,
+                                          SubscriptionRepository subscriptionRepository,
                                           PasswordEncoder passwordEncoder) {
         return args -> {
             // Seed Admin Users with BCrypt encrypted passwords
@@ -527,6 +531,93 @@ public class AmruthaApplication {
                 orderRepository.save(riceOrder);
 
                 log.info("Initialized {} completed sample orders for financial reporting.", orderRepository.count());
+            }
+
+            // Seed Sample Daily Milk Subscriptions if empty
+            if (subscriptionRepository.count() == 0 && sampleCustomer != null) {
+                log.info("Seeding initial active and paused milk subscriptions for daily demand tracking...");
+                LocalDate today = LocalDate.now();
+
+                // Subscription 1: Ramesh Sharma (1L Cow Milk, Morning, 30 Days, ACTIVE, PAID)
+                subscriptionRepository.save(new Subscription(
+                        "SUB-20261020-1001",
+                        sampleCustomer,
+                        sampleCustomer.getName(),
+                        sampleCustomer.getPhone(),
+                        sampleCustomer.getAddress(),
+                        "Pure Cow Milk",
+                        "1 Litre",
+                        new BigDecimal("1.00"),
+                        30,
+                        today.minusDays(5),
+                        today.plusDays(24),
+                        "Morning (5:30 AM – 7:30 AM)",
+                        new BigDecimal("60.00"),
+                        new BigDecimal("1800.00"),
+                        "Monthly household supply"
+                ));
+
+                // Subscription 2: Priya Patel (1L Buffalo Milk, Evening, 30 Days, ACTIVE, PAID)
+                subscriptionRepository.save(new Subscription(
+                        "SUB-20261020-1002",
+                        sampleCustomer,
+                        "Priya Patel",
+                        "+919876543210",
+                        "House #14, Main Road, Kodad",
+                        "Pure Buffalo Milk",
+                        "1 Litre",
+                        new BigDecimal("1.00"),
+                        30,
+                        today.minusDays(2),
+                        today.plusDays(27),
+                        "Evening (5:00 PM – 7:00 PM)",
+                        new BigDecimal("75.00"),
+                        new BigDecimal("2250.00"),
+                        "Thick milk for evening tea & dahi"
+                ));
+
+                // Subscription 3: Suresh Kumar (500ml Cow Milk, Morning, 7 Days, ACTIVE, PENDING)
+                subscriptionRepository.save(new Subscription(
+                        "SUB-20261020-1003",
+                        sampleCustomer,
+                        "Suresh Kumar",
+                        "+919848012345",
+                        "Near Water Tank, Kodad Town",
+                        "Pure Cow Milk",
+                        "500 ml",
+                        new BigDecimal("0.50"),
+                        7,
+                        today,
+                        today.plusDays(6),
+                        "Morning (5:30 AM – 7:30 AM)",
+                        new BigDecimal("30.00"),
+                        new BigDecimal("210.00"),
+                        "Weekly trial pack"
+                ));
+
+                // Subscription 4: Ananya Rao (2L Buffalo Milk, Morning, 30 Days, PAUSED)
+                Subscription sub4 = new Subscription(
+                        "SUB-20261020-1004",
+                        sampleCustomer,
+                        "Ananya Rao",
+                        "+919440156789",
+                        "Plot 88, Venkatarampuram, Kodad",
+                        "Pure Buffalo Milk",
+                        "2 Litres",
+                        new BigDecimal("2.00"),
+                        30,
+                        today.minusDays(10),
+                        today.plusDays(19),
+                        "Morning (5:30 AM – 7:30 AM)",
+                        new BigDecimal("150.00"),
+                        new BigDecimal("4500.00"),
+                        "Customer traveling out of station"
+                );
+                sub4.setStatus(SubscriptionStatus.PAUSED);
+                sub4.setPausedDate(today.minusDays(1));
+                subscriptionRepository.save(sub4);
+
+                log.info("Initialized {} sample milk subscriptions.", subscriptionRepository.count());
             }
         };
     }

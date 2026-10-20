@@ -36,6 +36,9 @@
         <a href="index.html" class="btn btn-outline btn-sm">
           &larr; Back to Home
         </a>
+        <button type="button" class="btn btn-outline btn-sm" id="btnOpenCustomerPortal" aria-label="View My Orders and Subscriptions">
+          📋 My Subscriptions &amp; Orders
+        </button>
         <button type="button" class="btn btn-milk btn-sm cart-header-btn" id="btnOpenCart"
           aria-label="View Shopping Cart">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -415,7 +418,227 @@
 
         </div>
 
-        <!-- Village Direct Assistance Banner -->
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- DAILY MILK SUBSCRIPTION SECTION (CUSTOMER PORTAL) -->
+    <!-- =================================================================== -->
+    <section class="subscription-section" id="subscriptions">
+      <div class="container">
+        
+        <div class="sub-header-wrapper">
+          <span class="sub-pill-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Daily Doorstep Convenience &bull; Zero Delivery Fee
+          </span>
+          <h2 class="sub-section-title">Subscribe to Pure Farm Fresh Milk</h2>
+          <p class="sub-section-subtitle">
+            Never run out of pure milk. Get fresh Cow or Buffalo milk delivered to your home every morning or evening without daily ordering hassle. Pause, resume, or cancel anytime.
+          </p>
+          <div>
+            <button type="button" class="sub-portal-link-btn" id="btnManageSubTop">
+              📋 Already Subscribed? Manage Deliveries &amp; Orders &rarr;
+            </button>
+          </div>
+        </div>
+
+        <div class="sub-builder-layout">
+          <!-- Left: Subscription Customizer Steps -->
+          <div class="sub-steps-container">
+            
+            <!-- Step 1: Select Variety -->
+            <div class="sub-step-card">
+              <h3 class="sub-step-title">
+                <span class="step-num-circle">1</span>
+                Choose Pure Milk Variety
+              </h3>
+              <div class="sub-variety-grid">
+                <div class="sub-variety-option selected" data-variety="Cow Milk" id="optCowMilk">
+                  <div class="variety-check-icon">✓</div>
+                  <div class="variety-header-row">
+                    <span class="variety-icon">🐄</span>
+                    <div>
+                      <div class="variety-name">Pure Cow Milk</div>
+                      <div class="variety-rate">₹60 / Litre &bull; ₹30 / 500ml</div>
+                    </div>
+                  </div>
+                  <span class="variety-badge">Light, wholesome &amp; naturally rich in A2 protein. Wholesome for children &amp; elders.</span>
+                </div>
+
+                <div class="sub-variety-option" data-variety="Buffalo Milk" id="optBuffaloMilk">
+                  <div class="variety-check-icon">✓</div>
+                  <div class="variety-header-row">
+                    <span class="variety-icon">🐃</span>
+                    <div>
+                      <div class="variety-name">Pure Buffalo Milk</div>
+                      <div class="variety-rate">₹75 / Litre &bull; ₹38 / 500ml</div>
+                    </div>
+                  </div>
+                  <span class="variety-badge">Thick 7%+ fat, creamy malai, ideal for rich morning tea, curd, and golden ghee.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Daily Delivery Quantity -->
+            <div class="sub-step-card">
+              <h3 class="sub-step-title">
+                <span class="step-num-circle">2</span>
+                Choose Daily Quantity
+              </h3>
+              <div class="sub-pills-row" id="subQtyPills">
+                <button type="button" class="sub-pill-btn" data-qty="500 ml">
+                  <span>500 ml</span>
+                  <span class="sub-pill-tag">Half Litre</span>
+                </button>
+                <button type="button" class="sub-pill-btn selected" data-qty="1 Litre">
+                  <span>1 Litre</span>
+                  <span class="sub-pill-tag">Most Popular</span>
+                </button>
+                <button type="button" class="sub-pill-btn" data-qty="2 Litres">
+                  <span>2 Litres</span>
+                  <span class="sub-pill-tag">Large Family</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3: Subscription Duration -->
+            <div class="sub-step-card">
+              <h3 class="sub-step-title">
+                <span class="step-num-circle">3</span>
+                Choose Subscription Duration
+              </h3>
+              <div class="sub-pills-row" id="subDurationPills">
+                <button type="button" class="sub-pill-btn" data-duration="7">
+                  <span>7 Days</span>
+                  <span class="sub-pill-tag">Weekly Trial</span>
+                </button>
+                <button type="button" class="sub-pill-btn selected" data-duration="30">
+                  <span>30 Days</span>
+                  <span class="sub-pill-tag">Monthly Saver</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 4: Schedule & Timing -->
+            <div class="sub-step-card">
+              <h3 class="sub-step-title">
+                <span class="step-num-circle">4</span>
+                Schedule &amp; Preferred Time Slot
+              </h3>
+              
+              <div class="sub-input-row">
+                <div class="sub-form-group">
+                  <label for="subStartDate">Delivery Start Date</label>
+                  <input type="date" id="subStartDate" class="sub-form-control" required>
+                </div>
+                <div class="sub-form-group">
+                  <label>Preferred Delivery Slot</label>
+                  <div class="sub-slots-grid">
+                    <div class="sub-slot-btn selected" data-slot="Morning Delivery (5:30 AM – 7:30 AM)">
+                      <div class="sub-slot-title">🌅 Morning</div>
+                      <div class="sub-slot-time">5:30 AM – 7:30 AM</div>
+                    </div>
+                    <div class="sub-slot-btn" data-slot="Evening Delivery (5:00 PM – 7:00 PM)">
+                      <div class="sub-slot-title">🌇 Evening</div>
+                      <div class="sub-slot-time">5:00 PM – 7:00 PM</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 5: Delivery Address & Details -->
+            <div class="sub-step-card">
+              <h3 class="sub-step-title">
+                <span class="step-num-circle">5</span>
+                Customer &amp; Delivery Address
+              </h3>
+              
+              <div class="sub-input-row">
+                <div class="sub-form-group">
+                  <label for="subCustName">Full Name *</label>
+                  <input type="text" id="subCustName" class="sub-form-control" placeholder="e.g. Ramesh Kumar" required>
+                </div>
+                <div class="sub-form-group">
+                  <label for="subCustPhone">Mobile Number (10 digits) *</label>
+                  <input type="tel" id="subCustPhone" class="sub-form-control" placeholder="e.g. 9876543210" maxlength="10" required>
+                </div>
+              </div>
+
+              <div class="sub-form-group">
+                <label for="subCustAddress">Doorstep Delivery Address / Village / Landmark *</label>
+                <textarea id="subCustAddress" class="sub-form-control" rows="2" placeholder="e.g. H.No 4-52, Main Road, Kodad town, Suryapet dist" required></textarea>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: Summary & Calculator -->
+          <aside class="sub-summary-card">
+            <div class="summary-card-header">
+              <h3>Subscription Summary</h3>
+              <span class="summary-badge" id="sumBadgePlan">30 Days Plan</span>
+            </div>
+
+            <div class="summary-lines-list">
+              <div class="summary-line">
+                <span>Milk Variety:</span>
+                <strong id="sumVarietyText">Pure Cow Milk</strong>
+              </div>
+              <div class="summary-line">
+                <span>Daily Delivery:</span>
+                <strong id="sumDailyQtyText">1 Litre / day</strong>
+              </div>
+              <div class="summary-line">
+                <span>Daily Rate:</span>
+                <strong id="sumDailyRateText">₹60.00 / day</strong>
+              </div>
+              <div class="summary-line">
+                <span>Duration:</span>
+                <strong id="sumDurationText">30 Days (30 Deliveries)</strong>
+              </div>
+              <div class="summary-line">
+                <span>Time Slot:</span>
+                <strong id="sumSlotText">Morning (5:30 – 7:30 AM)</strong>
+              </div>
+              <div class="summary-line">
+                <span>Delivery Window:</span>
+                <strong id="sumDateRangeText">Tomorrow &rarr; In 30 Days</strong>
+              </div>
+
+              <hr class="summary-divider">
+
+              <div class="summary-line">
+                <span>Delivery Fee:</span>
+                <strong style="color: #15803d;">FREE (₹0)</strong>
+              </div>
+            </div>
+
+            <!-- Total Box -->
+            <div class="summary-total-box">
+              <div class="total-label">Total Payable Amount</div>
+              <div class="total-amount-display" id="sumTotalPayable">₹1,800.00</div>
+              <div class="total-micro-note">Payable on Doorstep Delivery (Cash / UPI / GPay)</div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="button" class="btn-sub-confirm" id="btnConfirmSubscription">
+              <span>🚀 Confirm &amp; Activate Subscription</span>
+            </button>
+
+            <div class="sub-guarantee-note">
+              🔒 <strong>Flexible Customer Guarantee:</strong> You can pause deliveries when traveling or cancel anytime directly from your phone.
+            </div>
+          </aside>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Village Direct Assistance Banner -->
+    <section style="background-color: #ffffff; padding: 30px 0 60px 0;">
+      <div class="container">
         <div
           style="background-color: var(--milk-green-light); border: 2px solid var(--milk-green-border); border-radius: var(--radius-lg); padding: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
           <div>
@@ -438,7 +661,6 @@
             </a>
           </div>
         </div>
-
       </div>
     </section>
   </main>
@@ -479,6 +701,77 @@
       </div>
     </div>
   </footer>
+
+  <!-- =================================================================== -->
+  <!-- CUSTOMER SELF-SERVICE PORTAL MODAL (MY ORDERS & SUBSCRIPTIONS) -->
+  <!-- =================================================================== -->
+  <div class="portal-backdrop" id="customerPortalModal" role="dialog" aria-modal="true" aria-labelledby="portalTitle">
+    <div class="portal-dialog">
+      <div class="portal-dialog-header">
+        <h3 id="portalTitle">
+          📋 My Orders &amp; Subscriptions
+        </h3>
+        <button type="button" class="portal-close-btn" id="btnCloseCustomerPortal" aria-label="Close dialog">✕</button>
+      </div>
+
+      <div class="portal-dialog-body">
+        
+        <!-- Phone Lookup -->
+        <div class="portal-lookup-card">
+          <label for="portalPhoneInput" style="font-weight: 700; font-size: 0.92rem; color: #165b33;">
+            Enter Your Registered Mobile Number to View or Manage Deliveries:
+          </label>
+          <div class="portal-lookup-form">
+            <input type="tel" id="portalPhoneInput" class="sub-form-control" placeholder="Enter 10-digit mobile number" maxlength="10">
+            <button type="button" class="btn btn-milk" id="btnLookupCustomer">
+              🔍 Find My Records
+            </button>
+          </div>
+        </div>
+
+        <!-- Section Tabs -->
+        <div class="portal-sub-tabs">
+          <button type="button" class="btn-portal-tab active" data-portal-tab="active-subs" id="tabActiveSubs">
+            🥛 Active Subscriptions (<span id="countActiveSubs">0</span>)
+          </button>
+          <button type="button" class="btn-portal-tab" data-portal-tab="past-subs" id="tabPastSubs">
+            📜 Past Subscriptions (<span id="countPastSubs">0</span>)
+          </button>
+          <button type="button" class="btn-portal-tab" data-portal-tab="recent-orders" id="tabRecentOrders">
+            📦 My Store Orders (<span id="countMyOrders">0</span>)
+          </button>
+        </div>
+
+        <!-- Tab 1: Active Subscriptions -->
+        <div class="portal-tab-content active" id="portalTabActiveSubs">
+          <div id="activeSubsListContainer">
+            <div style="text-align: center; padding: 36px 16px; color: #64748b;">
+              Please enter your phone number above to see your active subscriptions.
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Past Subscriptions -->
+        <div class="portal-tab-content" id="portalTabPastSubs" style="display: none;">
+          <div id="pastSubsListContainer">
+            <div style="text-align: center; padding: 36px 16px; color: #64748b;">
+              No completed or cancelled subscriptions to show.
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Recent Customer Orders -->
+        <div class="portal-tab-content" id="portalTabRecentOrders" style="display: none;">
+          <div id="myOrdersListContainer">
+            <div style="text-align: center; padding: 36px 16px; color: #64748b;">
+              No store orders recorded yet.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification Container -->
   <div id="amruthaSiteToast" class="toast toast-cart" role="status" aria-live="polite"></div>
