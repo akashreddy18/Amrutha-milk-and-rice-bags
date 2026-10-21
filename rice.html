@@ -3,14 +3,13 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>AMRUTHA PREMIUM RICE | Aged Sona Masoori & Basmati Rice Bags</title>
   <meta name="description"
     content="AMRUTHA PREMIUM RICE - Pure Quality, Every Day. Aged Sona Masoori, Deluxe BPT, and Royal Basmati rice bags (5kg, 10kg, 25kg, 50kg). Clean white, cream and gold design.">
   <meta name="theme-color" content="#b8860b">
 
   <!-- Google Fonts: Cinzel for Authentic Brand Serif & Plus Jakarta Sans for UI -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
@@ -34,10 +33,14 @@
 
       <nav class="header-nav" aria-label="Page Navigation">
         <a href="index.html" class="btn btn-outline btn-sm">
-          &larr; Back to Home
+          &larr; <span class="nav-text-desktop">Back to </span>Home
         </a>
-        <a href="milk.html" class="btn btn-outline btn-sm">🥛 Fresh Milk</a>
-        <a href="admin.html" class="btn btn-outline btn-sm" style="color: #165b33; font-weight: 700;">🔐 Admin</a>
+        <a href="milk.html" class="btn btn-outline btn-sm">
+          🥛 <span class="nav-text-desktop">Fresh </span>Milk
+        </a>
+        <a href="admin.html" class="btn btn-outline btn-sm" style="color: #165b33; font-weight: 700;">
+          🔐 Admin
+        </a>
         <button type="button" class="btn btn-rice btn-sm cart-header-btn" id="btnOpenRiceCart"
           aria-label="View Rice Cart">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -46,7 +49,7 @@
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
           </svg>
-          Rice Cart
+          Cart
           <span class="rice-cart-count-badge cart-count-badge"
             style="background-color: var(--rice-gold); display: none;">0</span>
         </button>

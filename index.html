@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>AMRUTHA | Pure Quality, Every Day. - Amrutha Fresh Milk & Amrutha Premium Rice</title>
   <meta name="description"
     content="AMRUTHA - Pure Quality, Every Day. Explore Amrutha Fresh Milk and Amrutha Premium Rice bags. Farm-fresh dairy and finest aged rice for your home.">
@@ -33,11 +33,21 @@
       </div>
 
       <nav class="header-nav" aria-label="Quick Navigation">
-        <a href="milk.html" class="btn btn-outline btn-sm" data-bind="btnExploreMilk">Explore Milk</a>
-        <a href="rice.html" class="btn btn-outline btn-sm" data-bind="btnExploreRice">Explore Rice</a>
-        <a href="milk.html#subscriptions" class="btn btn-outline btn-sm">🥛 Subscriptions</a>
-        <a href="admin.html" class="btn btn-outline btn-sm" style="color: #165b33; font-weight: 700;">🔐 Admin</a>
-        <a href="#contact" class="btn btn-outline btn-sm" data-bind="btnContactUs">Contact Us</a>
+        <a href="milk.html" class="btn btn-outline btn-sm" data-bind="btnExploreMilk">
+          <span class="nav-text-desktop">Explore </span>Milk
+        </a>
+        <a href="rice.html" class="btn btn-outline btn-sm" data-bind="btnExploreRice">
+          <span class="nav-text-desktop">Explore </span>Rice
+        </a>
+        <a href="milk.html#subscriptions" class="btn btn-outline btn-sm">
+          🥛 <span class="nav-text-desktop">Subscriptions</span><span class="nav-text-mobile">Subs</span>
+        </a>
+        <a href="admin.html" class="btn btn-outline btn-sm" style="color: #165b33; font-weight: 700;">
+          🔐 Admin
+        </a>
+        <a href="#contact" class="btn btn-outline btn-sm" data-bind="btnContactUs">
+          <span class="nav-text-desktop">Contact </span>Us
+        </a>
         <button type="button" class="btn btn-dark btn-sm cart-header-btn" data-action="open-cart"
           aria-label="View Shopping Cart">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"

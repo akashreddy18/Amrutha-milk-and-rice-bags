@@ -62,9 +62,14 @@ html {
   font-family: var(--font-family);
   color: var(--text-dark);
   background-color: var(--bg-page);
-  line-height: 1.6;
+  line-height: 1.55;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
 }
 
 body {
@@ -73,6 +78,10 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  position: relative;
 }
 
 a {
@@ -1733,19 +1742,583 @@ img {
   }
 }
 
-@media (max-width: 600px) {
+/* ===================================================================
+   Responsive Mobile Scaling & Viewport Optimization
+   Eliminates horizontal scroll, prevents mobile auto-zoom,
+   and scales typography, cards, and headers for 360px - 430px screens
+   =================================================================== */
+
+.nav-text-desktop {
+  display: inline;
+}
+
+.nav-text-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Scale root font down so all rem-based units decrease naturally on mobile */
+  html {
+    font-size: 14.5px !important;
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+  }
+
   body {
     padding-bottom: 74px; /* Space for sticky bottom cart bar */
+    overflow-x: hidden;
+    max-width: 100vw;
   }
-  .milk-page-title, .rice-page-title {
-    font-size: 2.1rem;
+
+  .nav-text-desktop {
+    display: none !important;
   }
+
+  .nav-text-mobile {
+    display: inline !important;
+  }
+
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+    max-width: 100%;
+  }
+
+  /* Header Compact on Mobile */
+  .site-header {
+    padding: 7px 0;
+  }
+
   .header-inner {
-    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
+    gap: 6px;
   }
+
+  .header-brand-logo {
+    height: 36px;
+    max-width: 130px;
+    width: auto;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .header-nav .btn-sm {
+    padding: 5px 9px;
+    font-size: 0.78rem;
+    min-height: 34px;
+    gap: 4px;
+    border-radius: 8px;
+    line-height: 1;
+  }
+
+  .cart-header-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Banner & Headings Scaled for Mobile */
+  .milk-page-banner,
+  .rice-page-banner {
+    padding: 18px 0 14px 0;
+  }
+
+  .village-pill-badge {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    margin-bottom: 6px;
+  }
+
+  .milk-page-title,
+  .rice-page-title {
+    font-size: 1.65rem !important;
+    line-height: 1.22;
+    letter-spacing: 0.01em;
+    margin-bottom: 5px;
+  }
+
+  .milk-page-subtitle,
+  .rice-page-subtitle {
+    font-size: 0.88rem !important;
+    line-height: 1.42;
+    margin-bottom: 8px;
+  }
+
+  .sample-price-disclaimer {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+  }
+
+  .village-timings-strip {
+    padding: 8px 0;
+  }
+
+  .village-timings-grid {
+    gap: 6px;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .village-time-item {
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+
+  .village-time-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  /* Product Catalog Cards */
+  .milk-catalog-grid,
+  .rice-catalog-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .milk-product-card,
+  .rice-product-card {
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .milk-card-img-wrap,
+  .rice-card-img-wrap {
+    height: 175px !important;
+  }
+
+  .milk-card-img,
+  .rice-card-img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .milk-card-details,
+  .rice-card-details {
+    padding: 14px 12px !important;
+  }
+
+  .milk-product-name,
+  .rice-product-name {
+    font-size: 1.25rem !important;
+  }
+
+  .milk-local-name,
+  .rice-local-name {
+    font-size: 0.8rem !important;
+  }
+
+  .milk-product-desc,
+  .rice-product-desc {
+    font-size: 0.84rem !important;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .price-big-number {
+    font-size: 1.5rem !important;
+  }
+
+  .price-per-unit {
+    font-size: 0.82rem !important;
+  }
+
+  .qty-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.15rem;
+  }
+
+  .qty-display-value {
+    font-size: 0.88rem;
+    min-width: 70px;
+  }
+
+  .btn-add-cart {
+    padding: 11px 14px;
+    font-size: 0.92rem;
+    min-height: 42px;
+  }
+
+  /* Subscription Section Scaled for Mobile */
+  .subscription-section {
+    padding: 24px 0 28px 0;
+  }
+
+  .sub-header-wrapper {
+    margin-bottom: 16px;
+  }
+
+  .sub-section-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 5px;
+    line-height: 1.22;
+  }
+
+  .sub-section-subtitle {
+    font-size: 0.85rem !important;
+    line-height: 1.42;
+    margin-bottom: 10px;
+  }
+
+  .sub-portal-link-btn {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+  }
+
+  .sub-builder-layout {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .sub-steps-container {
+    gap: 12px;
+  }
+
+  .sub-step-card {
+    padding: 14px 12px !important;
+    border-radius: 12px;
+  }
+
+  .sub-step-title {
+    font-size: 0.95rem !important;
+    margin-bottom: 10px;
+    gap: 6px;
+  }
+
+  .step-num-circle {
+    width: 22px;
+    height: 22px;
+    font-size: 0.75rem;
+  }
+
+  .sub-variety-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+  }
+
+  .sub-variety-option {
+    padding: 10px 12px !important;
+    border-radius: 10px;
+  }
+
+  .variety-icon {
+    font-size: 1.2rem;
+  }
+
+  .variety-name {
+    font-size: 0.94rem;
+  }
+
+  .variety-rate {
+    font-size: 0.82rem;
+  }
+
+  .variety-badge {
+    font-size: 0.7rem;
+  }
+
+  .sub-pills-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 5px !important;
+  }
+
+  .sub-pill-btn {
+    padding: 8px 4px !important;
+    font-size: 0.8rem !important;
+    border-radius: 8px;
+  }
+
+  .sub-pill-tag {
+    font-size: 0.64rem;
+    padding: 1px 4px;
+  }
+
+  .sub-slots-grid {
+    grid-template-columns: 1fr !important;
+    gap: 6px;
+  }
+
+  .sub-slot-btn {
+    padding: 8px 10px !important;
+    border-radius: 8px;
+  }
+
+  .sub-slot-title {
+    font-size: 0.85rem;
+  }
+
+  .sub-slot-time {
+    font-size: 0.74rem;
+  }
+
+  .sub-input-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .sub-form-group label {
+    font-size: 0.8rem;
+  }
+
+  /* Crucial: Set 16px font-size to prevent iOS Safari auto-zooming on tap */
+  input, select, textarea,
+  .sub-form-control,
+  .form-control {
+    font-size: 16px !important;
+    padding: 9px 11px !important;
+    border-radius: 8px;
+  }
+
+  .sub-summary-card {
+    padding: 16px 12px !important;
+    border-radius: 14px;
+    position: static !important;
+    top: auto;
+    margin-top: 6px;
+  }
+
+  .summary-card-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .summary-line {
+    font-size: 0.84rem;
+  }
+
+  .summary-total-box {
+    padding: 10px 12px !important;
+    margin-bottom: 12px;
+    border-radius: 10px;
+  }
+
+  .total-amount-display {
+    font-size: 1.65rem !important;
+  }
+
+  .btn-sub-confirm {
+    padding: 12px 14px !important;
+    font-size: 0.94rem !important;
+    min-height: 44px;
+    border-radius: 10px;
+  }
+
   .unified-cart-drawer {
     max-width: 100%;
+  }
+
+  /* Homepage Hero on Mobile */
+  .hero-section {
+    padding: 20px 0 18px 0 !important;
+  }
+
+  .hero-brand-svg {
+    max-width: 200px !important;
+    height: auto !important;
+  }
+
+  .hero-tagline {
+    font-size: 1.05rem !important;
+    line-height: 1.35;
+    margin: 8px auto !important;
+  }
+
+  .hero-description {
+    font-size: 0.86rem !important;
+    line-height: 1.45;
+    margin-bottom: 16px !important;
+  }
+
+  .hero-buttons-bar {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    gap: 8px;
+  }
+
+  .hero-buttons-bar .btn {
+    width: 100%;
+    padding: 11px 16px !important;
+    font-size: 0.92rem !important;
+    justify-content: center;
+  }
+
+  .hero-packaging-showcase {
+    margin-top: 18px !important;
+    max-width: 100% !important;
+    border-radius: 12px !important;
+  }
+
+  .hero-packaging-img {
+    max-height: 200px !important;
+  }
+
+  .hero-packaging-badges {
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+
+  .packaging-badge {
+    font-size: 0.72rem !important;
+    padding: 4px 10px !important;
+  }
+
+  /* Two Cards Section (Homepage) */
+  .two-cards-section {
+    padding: 22px 0 32px 0 !important;
+  }
+
+  .two-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  .large-card {
+    border-radius: 14px !important;
+  }
+
+  .card-image-box {
+    height: 180px !important;
+  }
+
+  .card-body {
+    padding: 16px 14px !important;
+  }
+
+  .card-brand-logo-img {
+    height: 36px !important;
+    width: auto !important;
+  }
+
+  .card-tagline {
+    font-size: 0.88rem !important;
+    margin-bottom: 12px !important;
+  }
+
+  .card-features {
+    margin-bottom: 16px !important;
+  }
+
+  .feature-point {
+    font-size: 0.84rem !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .feature-point svg {
+    width: 15px !important;
+    height: 15px !important;
+    flex-shrink: 0;
+  }
+
+  .card-action-box .btn-lg {
+    padding: 11px 18px !important;
+    font-size: 0.94rem !important;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Rice Bag Options on Mobile */
+  .rice-bag-selector {
+    gap: 6px !important;
+  }
+
+  .rice-bag-btn {
+    padding: 6px 10px !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* Admin Dashboard Mobile */
+  .admin-header-inner {
+    padding: 10px 12px !important;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .admin-table-container,
+  .table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Smaller screens (iPhone SE, compact Androids) */
+  html {
+    font-size: 13.5px !important;
+  }
+
+  .container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .header-brand-logo {
+    height: 30px !important;
+    max-width: 110px !important;
+  }
+
+  .header-nav .btn-sm {
+    padding: 4px 7px !important;
+    font-size: 0.74rem !important;
+    min-height: 30px !important;
+  }
+
+  .sub-pills-row {
+    grid-template-columns: 1fr !important;
+    gap: 5px !important;
+  }
+
+  .sub-pill-btn {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px 10px !important;
+  }
+
+  .milk-card-img-wrap,
+  .rice-card-img-wrap {
+    height: 150px !important;
+  }
+
+  .card-image-box {
+    height: 160px !important;
+  }
+
+  .hero-packaging-img {
+    max-height: 165px !important;
+  }
+
+  .milk-page-title,
+  .rice-page-title {
+    font-size: 1.5rem !important;
+  }
+
+  .sub-section-title {
+    font-size: 1.35rem !important;
+  }
+
+  .total-amount-display {
+    font-size: 1.5rem !important;
   }
 }
 
