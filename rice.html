@@ -21,6 +21,31 @@
 
 <body>
 
+  <!-- Top Language & Welcome Bar -->
+  <div class="site-top-bar" id="siteTopBar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-welcome">
+        <span class="welcome-icon">🌾</span>
+        <span data-i18n="topWelcome">Pure Farm Fresh Dairy & Premium Aged Rice Bags</span>
+      </div>
+      <div class="top-bar-lang-selector" aria-label="Select Language">
+        <span class="lang-globe-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span data-i18n="langLabel">Language:</span>
+        </span>
+        <div class="lang-pills-group" role="tablist">
+          <button type="button" class="lang-pill-btn active" data-lang="en">ENG</button>
+          <button type="button" class="lang-pill-btn" data-lang="te">తెలుగు</button>
+          <button type="button" class="lang-pill-btn" data-lang="hi">हिन्दी</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Top Header -->
   <header class="site-header" id="top">
     <div class="container header-inner">
@@ -53,6 +78,13 @@
           <span class="rice-cart-count-badge cart-count-badge"
             style="background-color: var(--rice-gold); display: none;">0</span>
         </button>
+        <div class="header-lang-switch">
+          <div class="lang-pills-group" role="tablist">
+            <button type="button" class="lang-pill-btn active" data-lang="en">EN</button>
+            <button type="button" class="lang-pill-btn" data-lang="te">తె</button>
+            <button type="button" class="lang-pill-btn" data-lang="hi">हि</button>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
@@ -149,8 +181,8 @@
 
             <div class="rice-card-details">
               <div>
-                <h2 class="rice-product-name">Sona Masoori Rice</h2>
-                <span class="rice-local-name">సోనా మసూరి బియ్యం &bull; सोना मसूरी चावल</span>
+                <h2 class="rice-product-name" data-i18n-prod-name="sona-masoori">Sona Masoori Rice</h2>
+                <span class="rice-local-name" data-i18n-sub="sona-masoori" style="display: none;"></span>
 
                 <p class="rice-product-desc">
                   Finest medium-slender grain rice aged naturally for 12 to 18 months. Light on the stomach, non-sticky,
@@ -241,8 +273,8 @@
 
             <div class="rice-card-details">
               <div>
-                <h2 class="rice-product-name">Royal Basmati Rice</h2>
-                <span class="rice-local-name">రాయల్ బాస్మతి బియ్యం &bull; रॉयल बासमती चावल</span>
+                <h2 class="rice-product-name" data-i18n-prod-name="basmati-rice">Royal Basmati Rice</h2>
+                <span class="rice-local-name" data-i18n-sub="basmati-rice" style="display: none;"></span>
 
                 <p class="rice-product-desc">
                   Exquisite Himalayan aged long-grain basmati rice. Each grain expands to more than double its length
@@ -332,8 +364,8 @@
 
             <div class="rice-card-details">
               <div>
-                <h2 class="rice-product-name">Other Rice Varieties</h2>
-                <span class="rice-local-name">డీలక్స్ బియ్యం &bull; डीलक्स बीपीटी और कोलम</span>
+                <h2 class="rice-product-name" data-i18n-prod-name="other-varieties">Other Rice Varieties</h2>
+                <span class="rice-local-name" data-i18n-sub="other-varieties" style="display: none;"></span>
 
                 <p class="rice-product-desc">
                   Selected regional varieties: Deluxe BPT / HMT (silky white fine grain with tender bite) and Wada Kolam
@@ -483,6 +515,7 @@
   <div id="amruthaSiteToast" class="toast toast-cart" role="status" aria-live="polite"></div>
 
   <!-- JavaScript Modules (Separate Rice Module + Unified Cart) -->
+  <script src="i18n.js"></script>
   <script src="config.js"></script>
   <script src="cart.js"></script>
   <script src="api.js"></script>

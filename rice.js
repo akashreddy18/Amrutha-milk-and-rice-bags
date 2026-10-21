@@ -127,8 +127,8 @@ function renderRiceGrid(container, products) {
 
         <div class="rice-card-details">
           <div>
-            <h2 class="rice-product-name">${escapeHtml(product.name)}</h2>
-            ${product.localName ? `<span class="rice-local-name">${escapeHtml(product.localName)}</span>` : ''}
+            <h2 class="rice-product-name" data-i18n-prod-name="${product.id}">${escapeHtml(product.name)}</h2>
+            <span class="rice-local-name" data-i18n-sub="${product.id}" style="${product.localName ? '' : 'display: none;'}">${escapeHtml(product.localName || '')}</span>
 
             <p class="rice-product-desc">${escapeHtml(product.description || '')}</p>
 

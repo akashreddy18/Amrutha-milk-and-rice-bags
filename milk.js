@@ -168,8 +168,8 @@ function renderDairyGrid(container, backendProducts) {
 
       <div class="milk-card-details">
         <div class="milk-product-header">
-          <h2 class="milk-product-name">Pure Cow Milk</h2>
-          <span class="milk-local-name">ఆవు పాలు &bull; गाय का दूध</span>
+          <h2 class="milk-product-name" data-i18n-prod-name="cow-milk">Pure Cow Milk</h2>
+          <span class="milk-local-name" data-i18n-sub="cow-milk" style="display: none;"></span>
         </div>
 
         <p class="milk-product-desc">
@@ -223,8 +223,8 @@ function renderDairyGrid(container, backendProducts) {
 
       <div class="milk-card-details">
         <div class="milk-product-header">
-          <h2 class="milk-product-name">Pure Buffalo Milk</h2>
-          <span class="milk-local-name">గేదె పాలు &bull; भैंस का दूध</span>
+          <h2 class="milk-product-name" data-i18n-prod-name="buffalo-milk">Pure Buffalo Milk</h2>
+          <span class="milk-local-name" data-i18n-sub="buffalo-milk" style="display: none;"></span>
         </div>
 
         <p class="milk-product-desc">
@@ -278,8 +278,8 @@ function renderDairyGrid(container, backendProducts) {
 
       <div class="milk-card-details">
         <div class="milk-product-header">
-          <h2 class="milk-product-name">Fresh Malai Paneer</h2>
-          <span class="milk-local-name">తాజా మలై పనీర్ &bull; ताजा पनीर</span>
+          <h2 class="milk-product-name" data-i18n-prod-name="fresh-paneer">Fresh Malai Paneer</h2>
+          <span class="milk-local-name" data-i18n-sub="fresh-paneer" style="display: none;"></span>
         </div>
 
         <p class="milk-product-desc">
@@ -349,8 +349,8 @@ function renderDairyGrid(container, backendProducts) {
 
       <div class="milk-card-details">
         <div class="milk-product-header">
-          <h2 class="milk-product-name">Pure Desi Ghee</h2>
-          <span class="milk-local-name">స్వచ్ఛమైన దేశీ నెయ్యి &bull; शुद्ध देसी घी</span>
+          <h2 class="milk-product-name" data-i18n-prod-name="pure-ghee">Pure Desi Ghee</h2>
+          <span class="milk-local-name" data-i18n-sub="pure-ghee" style="display: none;"></span>
         </div>
 
         <p class="milk-product-desc">

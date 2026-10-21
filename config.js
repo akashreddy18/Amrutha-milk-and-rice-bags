@@ -64,7 +64,7 @@ const SITE_CONFIG = {
       {
         id: "cow-milk",
         name: "Pure Cow Milk",
-        localName: "(ఆవు పాలు / गाय का दूध)",
+        localName: "",
         status: "available",
         badge: "Daily Fresh",
         image: "assets/images/brand_milk_pouch.jpg",
@@ -80,7 +80,7 @@ const SITE_CONFIG = {
       {
         id: "buffalo-milk",
         name: "Pure Buffalo Milk",
-        localName: "(గేదె పాలు / भैंस का दूध)",
+        localName: "",
         status: "available",
         badge: "Thick & Creamy",
         image: "assets/images/buffalo_milk.jpg",
@@ -96,7 +96,7 @@ const SITE_CONFIG = {
       {
         id: "fresh-paneer",
         name: "Fresh Malai Paneer",
-        localName: "(తాజా మలై పనీర్ / ताजा पनीर)",
+        localName: "",
         status: "available",
         badge: "Farm Fresh",
         image: "assets/images/fresh_paneer.jpg",
@@ -118,7 +118,7 @@ const SITE_CONFIG = {
       {
         id: "pure-ghee",
         name: "Pure Desi Ghee",
-        localName: "(స్వచ్ఛమైన దేశీ నెయ్యి / शुद्ध देसी घी)",
+        localName: "",
         status: "available",
         badge: "Traditional Danedar",
         image: "assets/images/fresh_ghee.jpg",
@@ -151,7 +151,7 @@ const SITE_CONFIG = {
       {
         id: "sona-masoori",
         name: "Amrutha Sona Masoori Rice",
-        localName: "(సోనా మసూరి బియ్యం / सोना मसूरी चावल)",
+        localName: "",
         badge: "Aged 12-18 Months",
         image: "assets/images/brand_rice_bag.jpg",
         imageAlt: "Amrutha Sona Masoori authentic brand rice bag",
@@ -168,7 +168,7 @@ const SITE_CONFIG = {
       {
         id: "basmati-rice",
         name: "Amrutha Royal Basmati Rice",
-        localName: "(రాయల్ బాస్మతి బియ్యం / रॉयल बासमती चावल)",
+        localName: "",
         badge: "Extra Long Grain",
         image: "assets/images/basmati_rice_bag.jpg",
         imageAlt: "Amrutha Royal Basmati Rice bag with long slender grains",
@@ -185,7 +185,7 @@ const SITE_CONFIG = {
       {
         id: "other-varieties",
         name: "Other Rice Varieties (Deluxe BPT & Kolam)",
-        localName: "(డీలక్స్ బియ్యం & కోలం / डीलक्स बीपीटी और कोलम चावल)",
+        localName: "",
         badge: "Silky & Aromatic",
         image: "assets/images/kolam_rice_bag.jpg",
         imageAlt: "Deluxe BPT and Wada Kolam rice bag",

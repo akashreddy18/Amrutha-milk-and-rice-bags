@@ -5648,3 +5648,315 @@ img {
   border-color: #165b33;
   color: #ffffff;
 }
+
+/* ==========================================================================
+   TOP BAR & MULTI-LANGUAGE SWITCHER (i18n)
+   ========================================================================== */
+.site-top-bar {
+  background: linear-gradient(90deg, #0d381e 0%, #165b33 100%);
+  color: #ffffff;
+  font-size: 0.84rem;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  z-index: 1001;
+}
+
+.top-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.top-bar-welcome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #e2f9eb;
+  letter-spacing: 0.2px;
+}
+
+.welcome-icon {
+  font-size: 1rem;
+}
+
+.top-bar-lang-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lang-globe-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #c7eed5;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lang-pills-group {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(4px);
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  gap: 2px;
+}
+
+.lang-pill-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e2f9eb;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1.2;
+}
+
+.lang-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.lang-pill-btn.active {
+  background: #ffffff;
+  color: #0d381e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* Nav inline language switch */
+.header-lang-switch {
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.header-lang-switch .lang-pills-group {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.header-lang-switch .lang-pill-btn {
+  color: #475569;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+}
+
+.header-lang-switch .lang-pill-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.header-lang-switch .lang-pill-btn.active {
+  background: #165b33;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(22, 91, 51, 0.25);
+}
+
+/* ==========================================================================
+   HOMEPAGE COMPACT PRODUCT SHOWCASE GRID (Short, Visual & Modern)
+   ========================================================================== */
+.compact-showcase-grid {
+  display: grid;
+  gap: 20px;
+  margin: 24px 0 28px 0;
+}
+
+.milk-compact-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.rice-compact-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.compact-product-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.compact-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
+}
+
+.compact-milk-card:hover {
+  border-color: var(--milk-green, #165b33);
+}
+
+.compact-rice-card:hover {
+  border-color: var(--rice-gold, #c8963e);
+}
+
+.compact-card-media {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.compact-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.35s ease;
+}
+
+.compact-product-card:hover .compact-card-media img {
+  transform: scale(1.05);
+}
+
+.compact-card-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(15, 23, 42, 0.82);
+  color: #ffffff;
+  backdrop-filter: blur(6px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.compact-milk-card .compact-card-badge {
+  background: rgba(22, 91, 51, 0.9);
+}
+
+.compact-rice-card .compact-card-badge {
+  background: rgba(184, 134, 11, 0.92);
+}
+
+.compact-card-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.compact-card-title {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.25;
+  min-height: 2.5em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.compact-card-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.compact-card-price {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--milk-green, #165b33);
+}
+
+.compact-rice-card .compact-card-price {
+  color: var(--rice-gold-dark, #996515);
+}
+
+.compact-card-unit {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.btn-compact-action {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-compact-action:hover {
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN FOR COMPACT GRID & TOP BAR
+   ========================================================================== */
+@media (max-width: 992px) {
+  .milk-compact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .rice-compact-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .site-top-bar {
+    padding: 6px 0;
+  }
+  .top-bar-inner {
+    justify-content: center;
+    gap: 8px;
+  }
+  .top-bar-welcome {
+    display: none; /* Keep top clean on small mobile screens */
+  }
+  .milk-compact-grid,
+  .rice-compact-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .compact-card-media {
+    height: 110px;
+  }
+  .compact-card-body {
+    padding: 10px;
+    gap: 6px;
+  }
+  .compact-card-title {
+    font-size: 0.92rem;
+    min-height: auto;
+  }
+  .compact-card-price {
+    font-size: 1.1rem;
+  }
+  .btn-compact-action {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+}
+

@@ -22,6 +22,31 @@
 
 <body>
 
+  <!-- Top Language & Welcome Bar (Starting Option for Customers) -->
+  <div class="site-top-bar" id="siteTopBar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-welcome">
+        <span class="welcome-icon">🌿</span>
+        <span data-i18n="topWelcome">Pure Farm Fresh Dairy & Premium Aged Rice Bags</span>
+      </div>
+      <div class="top-bar-lang-selector" aria-label="Select Language">
+        <span class="lang-globe-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span data-i18n="langLabel">Language:</span>
+        </span>
+        <div class="lang-pills-group" role="tablist">
+          <button type="button" class="lang-pill-btn active" data-lang="en">ENG</button>
+          <button type="button" class="lang-pill-btn" data-lang="te">తెలుగు</button>
+          <button type="button" class="lang-pill-btn" data-lang="hi">हिन्दी</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Site Header -->
   <header class="site-header" id="top">
     <div class="container header-inner">
@@ -34,19 +59,19 @@
 
       <nav class="header-nav" aria-label="Quick Navigation">
         <a href="milk.html" class="btn btn-outline btn-sm" data-bind="btnExploreMilk">
-          <span class="nav-text-desktop">Explore </span>Milk
+          <span class="nav-text-desktop" data-i18n="btnExploreMilk">Explore Milk</span>
         </a>
         <a href="rice.html" class="btn btn-outline btn-sm" data-bind="btnExploreRice">
-          <span class="nav-text-desktop">Explore </span>Rice
+          <span class="nav-text-desktop" data-i18n="btnExploreRice">Explore Rice</span>
         </a>
         <a href="milk.html#subscriptions" class="btn btn-outline btn-sm">
-          🥛 <span class="nav-text-desktop">Subscriptions</span><span class="nav-text-mobile">Subs</span>
+          🥛 <span class="nav-text-desktop" data-i18n="btnSubscriptions">Subscriptions</span><span class="nav-text-mobile">Subs</span>
         </a>
         <a href="admin.html" class="btn btn-outline btn-sm" style="color: #165b33; font-weight: 700;">
-          🔐 Admin
+          🔐 <span data-i18n="btnAdmin">Admin</span>
         </a>
         <a href="#contact" class="btn btn-outline btn-sm" data-bind="btnContactUs">
-          <span class="nav-text-desktop">Contact </span>Us
+          <span class="nav-text-desktop" data-i18n="btnContactUs">Contact Us</span>
         </a>
         <button type="button" class="btn btn-dark btn-sm cart-header-btn" data-action="open-cart"
           aria-label="View Shopping Cart">
@@ -56,9 +81,16 @@
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
           </svg>
-          Cart
+          <span data-i18n="btnCart">Cart</span>
           <span class="cart-count-badge" style="display: none;">0</span>
         </button>
+        <div class="header-lang-switch">
+          <div class="lang-pills-group" role="tablist">
+            <button type="button" class="lang-pill-btn active" data-lang="en">EN</button>
+            <button type="button" class="lang-pill-btn" data-lang="te">తె</button>
+            <button type="button" class="lang-pill-btn" data-lang="hi">हि</button>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
@@ -76,11 +108,11 @@
 
           <!-- Tagline -->
           <div class="hero-tagline">
-            &ldquo;<span data-bind="tagline">Pure Quality, Every Day.</span>&rdquo;
+            &ldquo;<span data-i18n="tagline" data-bind="tagline">Pure Quality, Every Day.</span>&rdquo;
           </div>
 
           <!-- Short Description -->
-          <p class="hero-description" data-bind="shortDescription">
+          <p class="hero-description" data-i18n="shortDescription" data-bind="shortDescription">
             Your trusted household partner for 100% farm-fresh milk and top-grade aged rice bags.
           </p>
 
@@ -92,7 +124,7 @@
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
               </svg>
-              <span data-bind="btnExploreMilk">Explore Milk</span>
+              <span data-i18n="btnExploreMilk" data-bind="btnExploreMilk">Explore Milk</span>
             </a>
 
             <!-- Explore Rice Button (Large Gold) -->
@@ -102,7 +134,7 @@
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 14 14"></polyline>
               </svg>
-              <span data-bind="btnExploreRice">Explore Rice</span>
+              <span data-i18n="btnExploreRice" data-bind="btnExploreRice">Explore Rice</span>
             </a>
 
             <!-- Contact Us Button (Large Dark) -->
@@ -113,7 +145,7 @@
                   d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
                 </path>
               </svg>
-              <span data-bind="btnContactUs">Contact Us</span>
+              <span data-i18n="btnContactUs" data-bind="btnContactUs">Contact Us</span>
             </a>
           </div>
 
@@ -265,57 +297,56 @@
       <div class="container">
         <div class="quote-card">
           <div class="quote-mark-icon">&ldquo;</div>
-          <blockquote class="quote-text">
+          <blockquote class="quote-text" data-i18n="quoteText">
             Pure food is the sacred foundation of a healthy, joyful home. From the early morning dew on our green pastures to the golden harvest of aged paddy, every drop of Amrutha milk and every grain of Amrutha rice carries our uncompromised promise of farm-fresh purity, honesty, and wholesome nutrition.
           </blockquote>
           <div class="quote-author-wrap">
-            <span class="quote-telugu-hint">ఆరోగ్యకరమైన ఆహారమే కుటుంబ సౌభాగ్యం &bull; Healthy Living Begins With Pure Nourishment</span>
-            <cite class="quote-brand-author">&mdash; The Amrutha Family Promise</cite>
+            <span class="quote-telugu-hint" data-i18n="quoteSubtitle">Healthy Living Begins With Pure Nourishment</span>
+            <cite class="quote-brand-author" data-i18n="quoteAuthor">&mdash; The Amrutha Family Promise</cite>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION: EXPLORE MILK DETAILS (Revealed on 'Explore Milk') -->
+    <!-- SECTION: EXPLORE MILK DETAILS (Compact Visual Showcase) -->
     <section class="details-section section-milk-theme" id="milk-details">
       <div class="container">
         <div class="section-header">
-          <span class="card-badge"
+          <span class="card-badge" data-i18n="milkBadge"
             style="background-color: var(--milk-green-light); color: var(--milk-green-badge); border: 1px solid var(--milk-green-border);">Daily
             Fresh Dairy</span>
-          <h3 class="section-title" style="color: var(--milk-green);" data-bind="milkBrandName">AMRUTHA FRESH MILK</h3>
-          <p class="section-subtitle">Farm-fresh whole cow milk, rich buffalo milk, natural set curd, desi bilona ghee,
+          <h3 class="section-title" style="color: var(--milk-green);" data-i18n="milkSectionTitle" data-bind="milkBrandName">AMRUTHA FRESH MILK</h3>
+          <p class="section-subtitle" data-i18n="milkSectionSubtitle">Farm-fresh whole cow milk, rich buffalo milk, natural set curd, desi bilona ghee,
             and soft fresh paneer.</p>
         </div>
 
-        <div class="products-grid" id="milkProductsGrid">
-          <!-- Dynamically populated from config.js -->
+        <div class="compact-showcase-grid milk-compact-grid" id="milkProductsGrid">
+          <!-- Dynamically populated from app.js -->
         </div>
 
         <div style="text-align: center; margin-top: 24px;">
-          <a href="#contact" class="btn btn-milk btn-lg">Order Fresh Milk / Daily Subscription</a>
+          <a href="milk.html" class="btn btn-milk btn-lg" data-i18n="milkSectionCta">Order Fresh Milk / Daily Subscription</a>
         </div>
       </div>
     </section>
 
-    <!-- SECTION: EXPLORE RICE DETAILS (Revealed on 'Explore Rice') -->
+    <!-- SECTION: EXPLORE RICE DETAILS (Compact Visual Showcase) -->
     <section class="details-section section-rice-theme" id="rice-details">
       <div class="container">
         <div class="section-header">
-          <span class="card-badge"
+          <span class="card-badge" data-i18n="riceBadge"
             style="background-color: var(--rice-gold-light); color: var(--rice-gold-badge); border: 1px solid var(--rice-gold-border);">Finest
             Aged Paddy</span>
-          <h3 class="section-title" style="color: var(--rice-gold);" data-bind="riceBrandName">AMRUTHA PREMIUM RICE</h3>
-          <p class="section-subtitle">Top quality Sona Masoori, Deluxe BPT, Royal Basmati, and Wada Kolam in 5kg, 10kg,
-            25kg, and 50kg standard bags.</p>
+          <h3 class="section-title" style="color: var(--rice-gold);" data-i18n="riceSectionTitle" data-bind="riceBrandName">AMRUTHA PREMIUM RICE</h3>
+          <p class="section-subtitle" data-i18n="riceSectionSubtitle">Top quality Sona Masoori, Deluxe BPT, Royal Basmati, and Wada Kolam in standard bags.</p>
         </div>
 
-        <div class="products-grid" id="riceProductsGrid">
-          <!-- Dynamically populated from config.js -->
+        <div class="compact-showcase-grid rice-compact-grid" id="riceProductsGrid">
+          <!-- Dynamically populated from app.js -->
         </div>
 
         <div style="text-align: center; margin-top: 24px;">
-          <a href="#contact" class="btn btn-rice btn-lg">Order Rice Bags / Inquire Bulk Rates</a>
+          <a href="rice.html" class="btn btn-rice btn-lg" data-i18n="riceSectionCta">Order Rice Bags / Inquire Bulk Rates</a>
         </div>
       </div>
     </section>
@@ -592,6 +623,7 @@
   <div id="siteToast" class="toast" role="status" aria-live="polite"></div>
 
   <!-- JavaScript Configuration & Logic -->
+  <script src="i18n.js"></script>
   <script src="config.js"></script>
   <script src="cart.js"></script>
   <script src="api.js"></script>

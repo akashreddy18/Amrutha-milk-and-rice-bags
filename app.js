@@ -130,7 +130,7 @@ async function loadHomepageCategory(container, businessUnit, borderClass) {
   container.innerHTML = `
     <div class="api-state-container api-loading-state ${businessUnit === 'RICE' ? 'rice-theme' : ''}">
       <div class="api-spinner"></div>
-      <p>Loading ${businessUnit.toLowerCase()} products from Amrutha backend...</p>
+      <p>Loading ${businessUnit.toLowerCase()} products...</p>
     </div>
   `;
 
@@ -143,27 +143,29 @@ async function loadHomepageCategory(container, businessUnit, borderClass) {
     }
   }
 
-  // Graceful fallback for static GitHub Pages / offline mode
+  // Graceful fallback from SITE_CONFIG
   if (productsToRender.length === 0 && typeof SITE_CONFIG !== 'undefined') {
     if (businessUnit === 'DAIRY' && SITE_CONFIG.milkPage && SITE_CONFIG.milkPage.products) {
       productsToRender = SITE_CONFIG.milkPage.products.map(p => ({
+        id: p.id,
         name: p.name,
-        localName: p.localName,
         badge: p.badge,
-        description: p.description,
+        image: p.image,
         price: p.price,
-        unit: p.unit
+        unit: p.unit,
+        targetUrl: `milk.html#card${p.id === 'cow-milk' ? 'CowMilk' : p.id === 'buffalo-milk' ? 'BuffaloMilk' : p.id === 'fresh-paneer' ? 'Paneer' : 'Ghee'}`
       }));
     } else if (businessUnit === 'RICE' && SITE_CONFIG.ricePage && SITE_CONFIG.ricePage.products) {
       productsToRender = SITE_CONFIG.ricePage.products.map(p => {
         const defSize = (p.sizes && p.sizes.find(s => s.size === '25kg')) || (p.sizes && p.sizes[0]);
         return {
+          id: p.id,
           name: p.name,
-          localName: p.localName,
           badge: p.badge,
-          description: p.description,
+          image: p.image,
           price: defSize ? defSize.examplePrice : 1450,
-          unit: defSize ? `${defSize.size} Bag` : '25kg Bag'
+          unit: defSize ? `${defSize.size} Bag` : '25kg Bag',
+          targetUrl: `rice.html#${p.id === 'sona-masoori' ? 'cardSonaMasoori' : p.id === 'basmati-rice' ? 'cardBasmati' : 'cardOtherVarieties'}`
         };
       });
     }
@@ -174,23 +176,61 @@ async function loadHomepageCategory(container, businessUnit, borderClass) {
     return;
   }
 
-  // 2. Render Products
-  container.innerHTML = productsToRender.map(p => `
-    <div class="item-card ${borderClass}">
-      <div>
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-          <h4 class="item-name">${escapeHtml(p.name)}</h4>
-          ${p.badge ? `<span style="font-size: 0.72rem; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${escapeHtml(p.badge)}</span>` : ''}
+  // 2. Render Compact Visual Cards (Kept Short & Clean)
+  renderCompactProductCards(container, productsToRender, businessUnit);
+}
+
+function renderCompactProductCards(container, products, businessUnit) {
+  const currentLang = (typeof AmruthaI18n !== 'undefined') ? AmruthaI18n.getLanguage() : 'en';
+  const isRice = businessUnit === 'RICE';
+  const ctaText = (typeof AmruthaI18n !== 'undefined') ? AmruthaI18n.t('orderNow', currentLang) : 'Order Now';
+
+  // Ensure responsive grid class
+  container.className = `compact-showcase-grid ${isRice ? 'rice-compact-grid' : 'milk-compact-grid'}`;
+
+  container.innerHTML = products.map(p => {
+    // Get language translation if available
+    const pTrans = (typeof AmruthaI18n !== 'undefined') ? AmruthaI18n.getProduct(p.id, currentLang) : null;
+    const displayName = (pTrans && pTrans.name) ? pTrans.name : p.name;
+    const displayBadge = (pTrans && pTrans.badge) ? pTrans.badge : p.badge;
+    const displayUnit = (pTrans && pTrans.unit) ? pTrans.unit : p.unit;
+    const imgSrc = p.image || p.imageUrl || (isRice ? 'assets/images/brand_rice_bag.jpg' : 'assets/images/brand_milk_pouch.jpg');
+    const targetUrl = p.targetUrl || (isRice ? 'rice.html' : 'milk.html');
+    const formattedPrice = `₹${Number(p.price).toFixed(2).replace(/\.00$/, '')}`;
+
+    return `
+      <div class="compact-product-card ${isRice ? 'compact-rice-card' : 'compact-milk-card'}">
+        <div class="compact-card-media">
+          <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(displayName)}" loading="lazy" width="220" height="130">
+          ${displayBadge ? `<span class="compact-card-badge">${escapeHtml(displayBadge)}</span>` : ''}
         </div>
-        ${p.localName ? `<div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">${escapeHtml(p.localName)}</div>` : ''}
-        <p class="item-desc" style="margin-top: 6px;">${escapeHtml(p.description || '')}</p>
+        <div class="compact-card-body">
+          <h4 class="compact-card-title">${escapeHtml(displayName)}</h4>
+          <div class="compact-card-pricing">
+            <span class="compact-card-price">${formattedPrice}</span>
+            <span class="compact-card-unit">/ ${escapeHtml(displayUnit)}</span>
+          </div>
+          <a href="${escapeHtml(targetUrl)}" class="btn ${isRice ? 'btn-rice' : 'btn-milk'} btn-compact-action">
+            ${escapeHtml(ctaText)} &rarr;
+          </a>
+        </div>
       </div>
-      <div class="item-meta">
-        <span class="item-price">₹${Number(p.price).toFixed(2).replace(/\.00$/, '')}</span>
-        <span class="item-size">/ ${escapeHtml(p.unit)}</span>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
+}
+
+// Re-render compact showcase when language changes
+if (typeof window !== 'undefined') {
+  window.addEventListener('amrutha-language-changed', () => {
+    const milkGrid = document.getElementById('milkProductsGrid');
+    if (milkGrid && milkGrid.offsetParent !== null) {
+      loadHomepageCategory(milkGrid, 'DAIRY', 'milk-border');
+    }
+    const riceGrid = document.getElementById('riceProductsGrid');
+    if (riceGrid && riceGrid.offsetParent !== null) {
+      loadHomepageCategory(riceGrid, 'RICE', 'rice-border');
+    }
+  });
 }
 
 function renderGridError(container, businessUnit, errorMsg, borderClass) {

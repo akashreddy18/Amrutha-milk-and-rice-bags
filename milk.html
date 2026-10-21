@@ -22,6 +22,31 @@
 
 <body>
 
+  <!-- Top Language & Welcome Bar -->
+  <div class="site-top-bar" id="siteTopBar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-welcome">
+        <span class="welcome-icon">🥛</span>
+        <span data-i18n="topWelcome">Pure Farm Fresh Dairy & Premium Aged Rice Bags</span>
+      </div>
+      <div class="top-bar-lang-selector" aria-label="Select Language">
+        <span class="lang-globe-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span data-i18n="langLabel">Language:</span>
+        </span>
+        <div class="lang-pills-group" role="tablist">
+          <button type="button" class="lang-pill-btn active" data-lang="en">ENG</button>
+          <button type="button" class="lang-pill-btn" data-lang="te">తెలుగు</button>
+          <button type="button" class="lang-pill-btn" data-lang="hi">हिन्दी</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Top Header -->
   <header class="site-header" id="top">
     <div class="container header-inner">
@@ -50,6 +75,13 @@
           Cart
           <span class="cart-count-badge" style="display: none;">0</span>
         </button>
+        <div class="header-lang-switch">
+          <div class="lang-pills-group" role="tablist">
+            <button type="button" class="lang-pill-btn active" data-lang="en">EN</button>
+            <button type="button" class="lang-pill-btn" data-lang="te">తె</button>
+            <button type="button" class="lang-pill-btn" data-lang="hi">हि</button>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
@@ -141,8 +173,8 @@
 
             <div class="milk-card-details">
               <div class="milk-product-header">
-                <h2 class="milk-product-name">Pure Cow Milk</h2>
-                <span class="milk-local-name">ఆవు పాలు &bull; गाय का दूध</span>
+                <h2 class="milk-product-name" data-i18n-prod-name="cow-milk">Pure Cow Milk</h2>
+                <span class="milk-local-name" data-i18n-sub="cow-milk" style="display: none;"></span>
               </div>
 
               <p class="milk-product-desc">
@@ -207,8 +239,8 @@
 
             <div class="milk-card-details">
               <div class="milk-product-header">
-                <h2 class="milk-product-name">Pure Buffalo Milk</h2>
-                <span class="milk-local-name">గేదె పాలు &bull; भैंस का दूध</span>
+                <h2 class="milk-product-name" data-i18n-prod-name="buffalo-milk">Pure Buffalo Milk</h2>
+                <span class="milk-local-name" data-i18n-sub="buffalo-milk" style="display: none;"></span>
               </div>
 
               <p class="milk-product-desc">
@@ -272,8 +304,8 @@
 
             <div class="milk-card-details">
               <div class="milk-product-header">
-                <h2 class="milk-product-name">Fresh Malai Paneer</h2>
-                <span class="milk-local-name">తాజా మలై పనీర్ &bull; ताजा पनीर</span>
+                <h2 class="milk-product-name" data-i18n-prod-name="fresh-paneer">Fresh Malai Paneer</h2>
+                <span class="milk-local-name" data-i18n-sub="fresh-paneer" style="display: none;"></span>
               </div>
 
               <p class="milk-product-desc">
@@ -349,8 +381,8 @@
 
             <div class="milk-card-details">
               <div class="milk-product-header">
-                <h2 class="milk-product-name">Pure Desi Ghee</h2>
-                <span class="milk-local-name">స్వచ్ఛమైన దేశీ నెయ్యి &bull; शुद्ध देसी घी</span>
+                <h2 class="milk-product-name" data-i18n-prod-name="pure-ghee">Pure Desi Ghee</h2>
+                <span class="milk-local-name" data-i18n-sub="pure-ghee" style="display: none;"></span>
               </div>
 
               <p class="milk-product-desc">
@@ -777,6 +809,7 @@
   <div id="amruthaSiteToast" class="toast toast-cart" role="status" aria-live="polite"></div>
 
   <!-- JavaScript Modules -->
+  <script src="i18n.js"></script>
   <script src="config.js"></script>
   <script src="cart.js"></script>
   <script src="api.js"></script>
