@@ -637,6 +637,8 @@
     const buFilter = document.getElementById('ordersBuFilter')?.value || '';
     const statusFilter = document.getElementById('ordersStatusFilter')?.value || '';
 
+    let ordersList = [];
+
     let url = `${API_BASE}/admin/orders?`;
     if (buFilter) url += `businessUnit=${encodeURIComponent(buFilter)}&`;
     if (statusFilter) url += `status=${encodeURIComponent(statusFilter)}&`;
@@ -646,13 +648,33 @@
       const json = await res.json();
 
       if (json.success && json.data) {
-        renderAllOrdersTable(json.data);
-        const badge = document.getElementById('tabOrdersBadge');
-        if (badge) badge.textContent = json.data.length;
+        ordersList = json.data;
       }
     } catch (err) {
-      console.error('Failed to load orders:', err);
+      console.warn('API load orders failed:', err);
     }
+
+    // Merge client-side local orders (for GitHub Pages / demo mode)
+    try {
+      const localRaw = localStorage.getItem('amrutha_local_orders');
+      if (localRaw) {
+        const localList = JSON.parse(localRaw);
+        const existingNums = new Set(ordersList.map(o => o.orderNumber));
+        localList.forEach(lo => {
+          if (!existingNums.has(lo.orderNumber)) {
+            if (!statusFilter || lo.status === statusFilter) {
+              ordersList.unshift(lo);
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('Failed to load local orders in admin:', e);
+    }
+
+    renderAllOrdersTable(ordersList);
+    const badge = document.getElementById('tabOrdersBadge');
+    if (badge) badge.textContent = ordersList.length;
   };
 
   function renderAllOrdersTable(orders) {

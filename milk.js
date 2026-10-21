@@ -1002,7 +1002,7 @@ async function loadCustomerPortalData(phone) {
     ];
   }
 
-  // 2. Fetch Customer Orders from API
+  // 2. Fetch Customer Orders from API or Local Storage (GitHub Pages resilient)
   try {
     if (typeof AmruthaAPI !== 'undefined' && AmruthaAPI.getCustomerOrders) {
       const ordRes = await AmruthaAPI.getCustomerOrders(phone);
@@ -1012,6 +1012,23 @@ async function loadCustomerPortalData(phone) {
     }
   } catch (err) {
     console.warn('Order lookup failed:', err);
+  }
+
+  // Merge with client-side persistent orders (for offline / GitHub Pages mode)
+  try {
+    const rawLocalOrders = localStorage.getItem('amrutha_local_orders');
+    const localOrders = rawLocalOrders ? JSON.parse(rawLocalOrders) : [];
+    const cleanLookupPhone = phone ? phone.replace(/\D/g, '') : '';
+    const userOrders = localOrders.filter(o => {
+      const oPhone = (o.customerPhone || '').replace(/\D/g, '');
+      return oPhone && (oPhone === cleanLookupPhone || cleanLookupPhone.endsWith(oPhone) || oPhone.endsWith(cleanLookupPhone));
+    });
+    const existingOrderNums = new Set(orders.map(o => o.orderNumber));
+    userOrders.forEach(lo => {
+      if (!existingOrderNums.has(lo.orderNumber)) orders.unshift(lo);
+    });
+  } catch (e) {
+    console.warn('Failed to load local orders in portal:', e);
   }
 
   // Partition into Active vs Past Subscriptions
