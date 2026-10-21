@@ -5,6 +5,10 @@
    ========================================================================== */
 
 :root {
+  /* Force mobile browsers to only render light mode - Never auto-invert to dark */
+  color-scheme: only light !important;
+  supported-color-schemes: light !important;
+
   /* Neutral Color Palette - Warm Organic Tones from Packaging (No Cool Slate Blues) */
   --bg-page: #ffffff;
   --bg-subtle: #faf8f5;
@@ -59,9 +63,11 @@
 }
 
 html {
+  color-scheme: only light !important;
   font-family: var(--font-family);
   color: var(--text-dark);
-  background-color: var(--bg-page);
+  background-color: #ffffff !important;
+  background: #ffffff !important;
   line-height: 1.55;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -73,7 +79,9 @@ html {
 }
 
 body {
-  background-color: var(--bg-page);
+  color-scheme: only light !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
   color: var(--text-body);
   min-height: 100vh;
   display: flex;
@@ -82,6 +90,57 @@ body {
   max-width: 100%;
   width: 100%;
   position: relative;
+}
+
+/* Enforce crisp white background even when mobile device has Dark Mode active */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: only light !important;
+    supported-color-schemes: light !important;
+    --bg-page: #ffffff !important;
+    --bg-subtle: #faf8f5 !important;
+    --bg-card: #ffffff !important;
+    --text-dark: #162618 !important;
+    --text-body: #2c3a2d !important;
+    --text-muted: #5c6d5e !important;
+    --border-light: #dfe8e0 !important;
+    --border-subtle: #edf3ee !important;
+  }
+
+  html,
+  body {
+    color-scheme: only light !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #2c3a2d !important;
+  }
+
+  main,
+  section,
+  header,
+  footer,
+  div,
+  article {
+    color-scheme: only light !important;
+  }
+
+  .two-cards-section,
+  .brand-quote-section,
+  .details-section,
+  .contact-section,
+  .milk-catalog-section,
+  .rice-catalog-section,
+  .compact-product-card,
+  .large-card,
+  .milk-product-card,
+  .rice-product-card,
+  .quote-card,
+  .cart-drawer,
+  .customer-portal-modal,
+  .portal-modal-container {
+    background-color: #ffffff !important;
+    color: inherit !important;
+  }
 }
 
 a {
