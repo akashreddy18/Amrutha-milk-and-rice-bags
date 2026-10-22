@@ -318,6 +318,117 @@ const AmruthaI18n = (function () {
     return (TRANSLATIONS.en.products && TRANSLATIONS.en.products[productId]) || null;
   }
 
+  const HAS_CHOSEN_KEY = 'amrutha_lang_chosen';
+
+  function ensureModalElement() {
+    let modal = document.getElementById('amruthaLangModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'amruthaLangModal';
+      modal.className = 'lang-modal-overlay';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-label', 'Select Language');
+      modal.innerHTML = `
+        <div class="lang-modal-card">
+          <button type="button" class="lang-modal-close-btn" id="btnCloseLangModal" aria-label="Close language selector">&times;</button>
+          <div class="lang-modal-header">
+            <div class="lang-modal-icon-badge">🌿</div>
+            <h3 class="lang-modal-title">Select Your Language</h3>
+            <p class="lang-modal-subtitle">మీ భాషను ఎంచుకోండి &bull; अपनी भाषा चुनें</p>
+          </div>
+          <div class="lang-modal-grid">
+            <button type="button" class="lang-modal-option" data-choose-lang="en">
+              <div class="lang-modal-option-main">
+                <span class="lang-modal-option-name">English</span>
+                <span class="lang-modal-option-sub">Pure Farm Fresh Quality</span>
+              </div>
+              <span class="lang-modal-option-arrow">&rarr;</span>
+            </button>
+            <button type="button" class="lang-modal-option" data-choose-lang="te">
+              <div class="lang-modal-option-main">
+                <span class="lang-modal-option-name">తెలుగు</span>
+                <span class="lang-modal-option-sub">స్వచ్ఛమైన నాణ్యత, ప్రతిరోజూ</span>
+              </div>
+              <span class="lang-modal-option-arrow">&rarr;</span>
+            </button>
+            <button type="button" class="lang-modal-option" data-choose-lang="hi">
+              <div class="lang-modal-option-main">
+                <span class="lang-modal-option-name">हिन्दी</span>
+                <span class="lang-modal-option-sub">शुद्ध गुणवत्ता, हर दिन</span>
+              </div>
+              <span class="lang-modal-option-arrow">&rarr;</span>
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      // Bind close button
+      const closeBtn = modal.querySelector('#btnCloseLangModal');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+      }
+
+      // Close on backdrop click (if already chosen once)
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          let chosen = false;
+          try {
+            chosen = localStorage.getItem(HAS_CHOSEN_KEY) === 'true';
+          } catch (err) {}
+          if (chosen) {
+            closeModal();
+          }
+        }
+      });
+
+      // Bind options
+      modal.querySelectorAll('[data-choose-lang]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-choose-lang');
+          if (lang) {
+            setLanguage(lang);
+            try {
+              localStorage.setItem(HAS_CHOSEN_KEY, 'true');
+            } catch (err) {}
+            closeModal();
+          }
+        });
+      });
+    }
+    return modal;
+  }
+
+  function openModal(canClose = true) {
+    const modal = ensureModalElement();
+    const closeBtn = modal.querySelector('#btnCloseLangModal');
+    if (closeBtn) {
+      closeBtn.style.display = canClose ? 'flex' : 'none';
+    }
+
+    // Highlight current active language
+    const currentLang = getCurrentLang();
+    modal.querySelectorAll('.lang-modal-option').forEach(opt => {
+      if (opt.getAttribute('data-choose-lang') === currentLang) {
+        opt.classList.add('active');
+      } else {
+        opt.classList.remove('active');
+      }
+    });
+
+    requestAnimationFrame(() => {
+      modal.classList.add('open');
+    });
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('amruthaLangModal');
+    if (modal) {
+      modal.classList.remove('open');
+    }
+  }
+
   function setLanguage(lang) {
     if (!['en', 'te', 'hi'].includes(lang)) {
       lang = DEFAULT_LANG;
@@ -328,7 +439,14 @@ const AmruthaI18n = (function () {
 
     document.documentElement.lang = lang;
 
-    // 1. Update all language switcher buttons active states
+    // 1. Update current language labels (e.g., .current-lang-code)
+    const langLabels = { en: 'ENG', te: 'తెలుగు', hi: 'हिन्दी' };
+    const currentLabel = langLabels[lang] || 'ENG';
+    document.querySelectorAll('.current-lang-code').forEach(el => {
+      el.textContent = currentLabel;
+    });
+
+    // 2. Update all language switcher buttons active states (if any exist)
     document.querySelectorAll('.lang-pill-btn').forEach(btn => {
       const btnLang = btn.getAttribute('data-lang');
       if (btnLang === lang) {
@@ -340,7 +458,7 @@ const AmruthaI18n = (function () {
       }
     });
 
-    // 2. Translate generic data-i18n elements
+    // 3. Translate generic data-i18n elements
     const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -349,7 +467,7 @@ const AmruthaI18n = (function () {
       }
     });
 
-    // 3. Translate subtitle / local name spans
+    // 4. Translate subtitle / local name spans
     document.querySelectorAll('[data-i18n-sub]').forEach(el => {
       const pId = el.getAttribute('data-i18n-sub');
       const pTrans = getProductTranslation(pId, lang);
@@ -365,7 +483,7 @@ const AmruthaI18n = (function () {
       }
     });
 
-    // 4. Translate product names if present with data-i18n-prod-name
+    // 5. Translate product names if present with data-i18n-prod-name
     document.querySelectorAll('[data-i18n-prod-name]').forEach(el => {
       const pId = el.getAttribute('data-i18n-prod-name');
       const pTrans = getProductTranslation(pId, lang);
@@ -374,7 +492,7 @@ const AmruthaI18n = (function () {
       }
     });
 
-    // 5. Translate product badges if present with data-i18n-prod-badge
+    // 6. Translate product badges if present with data-i18n-prod-badge
     document.querySelectorAll('[data-i18n-prod-badge]').forEach(el => {
       const pId = el.getAttribute('data-i18n-prod-badge');
       const pTrans = getProductTranslation(pId, lang);
@@ -383,7 +501,7 @@ const AmruthaI18n = (function () {
       }
     });
 
-    // 6. Broadcast event so other components (app.js, milk.js, rice.js) can react
+    // 7. Broadcast event so other components (app.js, milk.js, rice.js) can react
     window.dispatchEvent(new CustomEvent('amrutha-language-changed', {
       detail: { lang, dict }
     }));
@@ -391,20 +509,35 @@ const AmruthaI18n = (function () {
 
   function init() {
     const currentLang = getCurrentLang();
-    
-    // Bind all language switcher pill buttons
+    setLanguage(currentLang);
+
+    // Bind any language switcher buttons that might exist in DOM
     document.addEventListener('click', (e) => {
       const target = e.target.closest('.lang-pill-btn');
       if (target) {
         const selectedLang = target.getAttribute('data-lang');
         if (selectedLang) {
           setLanguage(selectedLang);
+          try {
+            localStorage.setItem(HAS_CHOSEN_KEY, 'true');
+          } catch (err) {}
         }
       }
     });
 
-    // Apply current language on initial load
-    setLanguage(currentLang);
+    // Check if customer is opening the website for the very first time
+    let hasChosen = false;
+    try {
+      hasChosen = localStorage.getItem(HAS_CHOSEN_KEY) === 'true';
+    } catch (e) {}
+
+    // Only show modal when customer opens for the first time!
+    // Never show every time on the home screen if already chosen.
+    if (!hasChosen) {
+      setTimeout(() => {
+        openModal(false); // First time: prompt customer to choose language
+      }, 400);
+    }
   }
 
   // Run when DOM is ready
@@ -417,6 +550,8 @@ const AmruthaI18n = (function () {
   return {
     getLanguage: getCurrentLang,
     setLanguage: setLanguage,
+    openModal: openModal,
+    closeModal: closeModal,
     t: getTranslation,
     getProduct: getProductTranslation,
     translations: TRANSLATIONS
